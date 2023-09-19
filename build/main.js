@@ -14,6 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 /*
+//STUDIA ESEMPIO https://www.npmjs.com/package/csv-parse PER IL CSV!!!!
+
+ESEMPIO READ CSV ASINCRONO
+const fs = require('fs')
+var parse = require('csv-parse')
+fs.readFile(inputPath, function (err, fileData) {
+  parse(fileData, {columns: false, trim: true}, function(err, rows) {
+    // Your CSV data is in an array of arrys passed to this callback as rows.
+  })
+})
+
+- invece usa const string= fs.readFileSync()
+
+*/
+/*
 const stringa1="ciao";
 var stringa2="Lorem ipsum dixit";
 console.log("Stringa: "+stringa1+", lunghezza: "+stringa1.length+", primo carattere: "+stringa1[0])
