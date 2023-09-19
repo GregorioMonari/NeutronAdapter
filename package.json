@@ -1,0 +1,33 @@
+{
+  "name": "neutronadapter",
+  "version": "0.0.1",
+  "description": "Semantic client for Neutron data",
+  "main": "build/main.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node ./build/main.js",
+    "dev:build": "tsc -w",
+    "dev:run": "nodemon build/main -jsap './resources/criteria.jsap.json' -loglevel 1",
+    "dev": "concurrently npm:dev:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GregorioMonari/NeutronAdapter.git"
+  },
+  "author": "Gregorio Monari",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GregorioMonari/NeutronAdapter/issues"
+  },
+  "homepage": "https://github.com/GregorioMonari/NeutronAdapter#readme",
+  "dependencies": {
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.2"
+  }
+}
