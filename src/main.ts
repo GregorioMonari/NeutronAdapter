@@ -1,6 +1,9 @@
+import FinAppClient from "./client/FinAppClient";
+import { FinAppData } from "./client/FinAppClient";
 import NmDbClient from "./client/NmdbClient";
+import { JungData } from "./client/NmdbClient";
 
-
+/*
 main();
 
 async function main() {
@@ -10,6 +13,102 @@ async function main() {
     console.log(data)
 }
 
+
+
+
+*/
+
+//ABBIAMO FATTO 3 COSE: FETCH DATA, PREPROCESS DATA (clean,parse), PROCESS DATA (model)
+
+
+main();
+
+async function main() {
+    console.log("STARTING PROGRAM")
+
+    const currentDatetime: Date = new Date();
+
+    // Calculate the midnight of yesterday
+    const midnightYesterday: Date = new Date(currentDatetime);
+    midnightYesterday.setDate(currentDatetime.getDate() - 1);
+    //midnightYesterday.setHours(0, 0, 0, 0);
+    const yesterday=midnightYesterday.toISOString().split("T")[0]
+    console.log(yesterday)
+
+    // Calculate the midnight of today
+    const midnightToday: Date = new Date(currentDatetime);
+    const today=midnightToday.toISOString().split("T")[0]
+    console.log(today)
+
+    //TODO[0]: trovami la data corrispondente alla mezzanotte di ieri e di oggi
+    let startDate=yesterday //mezzanotte di ieri
+    let stopDate=today //mezzanotte di stamattina
+
+    //1. GET FINAPP DATA (json con colonne, non la stringa!!!)
+    const excelPath='./resources/id_sensor_baroni.csv';
+    const finappClient= new FinAppClient(excelPath);
+    const finappData= await finappClient.getFinappData(1)
+    //console.log(finappData["#Datetime"],finappData.neutrons)
+
+    // Convert #Datetime strings to Date objects
+    const datetimeValues = finappData["#Datetime"].map((datetimeStr) => new Date(datetimeStr));
+
+    // Get the current date in the local time zone
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
+
+    // Calculate the start of yesterday (00:00:00 UTC)
+    const startOfYesterdayUTC = new Date(Date.UTC(currentYear, currentMonth, currentDay - 1, 0, 0, 0));
+
+    // Calculate the end of yesterday (23:00:00 UTC)
+    const endOfYesterdayUTC = new Date(Date.UTC(currentYear, currentMonth, currentDay - 1, 23, 0, 0));
+
+    // Filter the values for yesterday
+    const yesterdayTimeValues = datetimeValues.filter((datetime) => datetime >= startOfYesterdayUTC && datetime <= endOfYesterdayUTC);
+
+    // Now you have the values for yesterday (from 00:00:00 to 23:00:00)
+    console.log(yesterdayTimeValues); 
+
+
+
+    // Find the index range for yesterday's data
+    const startIndex = datetimeValues.findIndex((datetime) => datetime >= startOfYesterdayUTC);
+    const endIndex = datetimeValues.findIndex((datetime) => datetime >= endOfYesterdayUTC);
+
+    // Extract neutrons values for yesterday
+    const yesterdayFinappNeutrons = finappData.neutrons.slice(startIndex, endIndex+1);
+
+    // Now you have the neutrons values for yesterday in yesterdayNeutrons
+    console.log(yesterdayFinappNeutrons); 
+
+    //TODO[1]: dammi la fetta di dati da mezzanotte di ieri a oggi
+    let fetta1=[]
+
+
+    //2. GET JUNG DATA (json con colonne)
+    const jungClient= new NmDbClient();
+    //TODO[2]: instead of today's data, get previous day data starting from 00:00
+    const jungData= await jungClient.getJungData(yesterday,yesterday)//getJungDataOfToday();
+    console.log(jungData)
+    let fetta2=[]
+
+    //3. APPLY MODEL
+    //TODO[3]: scrivi modello di correzione
+
+    console.log("PROGRAM FINISHED")
+} 
+
+
+function applyCorrections(jungData:JungData,finappData:FinAppData):number{
+    
+    console.log("Jung dates:",jungData.Datetime)
+    const totDates=finappData["#Datetime"].length
+    console.log("Finapp dates:",finappData["#Datetime"][totDates-1])
+
+    return 0
+}
 
 
 

@@ -1,6 +1,13 @@
 import axios from 'axios'
 import { read_csv_from_path, read_csv_from_string } from '../utils/CsvParser';
 
+
+export interface JungData{
+    Datetime:string[];
+    RCORR_E:string[];
+}
+
+
 export default class NmDbClient{
 
     constructor(){}
@@ -24,7 +31,7 @@ export default class NmDbClient{
      * @param stopDate 
      * @returns 
      */
-    public async getJungData(startDate: string, stopDate: string) {
+    public async getJungData(startDate: string, stopDate: string): Promise<JungData> {
         const station = "JUNG";
         const rawData = await this.getRawData(station, startDate, stopDate);
         const cleanData= this.cleanRawData(rawData);

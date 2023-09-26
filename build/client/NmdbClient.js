@@ -52,6 +52,14 @@ class NmDbClient {
         const cleanedDataHeader = "Datetime;RCORR_E" + "\n" + cleanedData;
         return cleanedDataHeader;
     }
+    /**
+     * Get raw api data in string form from nmdb.
+     * Allowed stations: JUNG, JUNG1
+     * @param station
+     * @param startDate
+     * @param stopDate
+     * @returns
+     */
     getRawData(station, startDate, stopDate) {
         return __awaiter(this, void 0, void 0, function* () {
             //PARSE DATES
