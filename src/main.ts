@@ -14,50 +14,6 @@ async function main() {
 
 
 /*
-
-
-
-
-axios.get(url)
-    .then((response)=>{
-        console.log(response.data)
-    })
-    .catch((e)=>{
-        console.log("E' ARRIVATO UN ERRORE! PROBABILMENTE HAI SBAGLIATO L'URL")
-    })
-    .finally(()=>{
-        console.log("Ho concluso la richiesta. Potrebbe essere andata bene o male.")
-    })
-
-
-console.log("CIAO")
-
-*/
-/*
-const array=[1,2,3,4]
-for(var i=0; i<4; i++){
-    console.log(array[i])
-}
-
-for(const i in array){
-    console.log(array[i])
-}
-for(const entry of array){
-    console.log(entry)
-}
-array.forEach(entry=>{
-    console.log(entry)
-})
-const json:any={
-    "nome":"mario",
-    "età":24
-}
-Object.keys(json).forEach((k:any)=>{
-    console.log(json[k])
-})
-*/
-
-/*
 main()
 
 async function main(){

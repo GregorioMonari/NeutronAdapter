@@ -44,7 +44,15 @@ export default class NmDbClient{
         return cleanedDataHeader
     }
 
-    private async getRawData(station:string,startDate:string,stopDate:string):Promise<string>{
+    /**
+     * Get raw api data in string form from nmdb. 
+     * Allowed stations: JUNG, JUNG1
+     * @param station 
+     * @param startDate 
+     * @param stopDate 
+     * @returns 
+     */
+    async getRawData(station:string,startDate:string,stopDate:string):Promise<string>{
         //PARSE DATES
         const startDateArr= startDate.split("-");
         //console.log(startDateArr)
