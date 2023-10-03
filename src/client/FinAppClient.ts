@@ -49,9 +49,11 @@ export default class FinAppClient{
     
         const finappUrl="https://www.finapptech.com/finapp/api/getCSV_id.php?ID="+id_finapp+"=&D="+id_finapp_detector;
         //console.log(finappUrl)
+
         const response= await axios.get(finappUrl)
-    
+        
         const data= response.data
+        //console.log(data)
         return data
     } 
 }

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const FinAppClient_1 = __importDefault(require("./client/FinAppClient"));
 const NmdbClient_1 = __importDefault(require("./client/NmdbClient"));
+const child_process_1 = require("child_process");
 /*
 main();
 
@@ -29,7 +30,22 @@ async function main() {
 
 */
 //ABBIAMO FATTO 3 COSE: FETCH DATA, PREPROCESS DATA (clean,parse), PROCESS DATA (model)
-main();
+testSpawn();
+function testSpawn() {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("I AM SPAWNING A TERMINAL COMMAND!");
+        //TODO: al posto di "dir" mi devi lanciare Rscript ./hello.r
+        const command = "dir";
+        const child = (0, child_process_1.spawn)('cmd.exe', ["/c", command]);
+        child.stdout.on('data', data => {
+            console.log(`stdout:\n${data}`);
+        });
+        child.stderr.on('data', data => {
+            console.error(`stderr: ${data}`);
+        });
+    });
+}
+//main();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("STARTING PROGRAM");
@@ -72,7 +88,7 @@ function main() {
         const endIndex = datetimeValues.findIndex((datetime) => datetime >= endOfYesterdayUTC);
         // Extract neutrons values for yesterday
         const yesterdayFinappNeutrons = finappData.neutrons.slice(startIndex, endIndex + 1);
-        // Now you have the neutrons values for yesterday in yesterdayNeutrons
+        // Now you have the neutrons values for yesterday in yesterdayNeutrons 
         console.log(yesterdayFinappNeutrons);
         //TODO[1]: dammi la fetta di dati da mezzanotte di ieri a oggi
         let fetta1 = [];

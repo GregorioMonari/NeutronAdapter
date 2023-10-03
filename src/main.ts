@@ -2,6 +2,10 @@ import FinAppClient from "./client/FinAppClient";
 import { FinAppData } from "./client/FinAppClient";
 import NmDbClient from "./client/NmdbClient";
 import { JungData } from "./client/NmdbClient";
+import { spawn } from "child_process";
+
+
+
 
 /*
 main();
@@ -21,7 +25,30 @@ async function main() {
 //ABBIAMO FATTO 3 COSE: FETCH DATA, PREPROCESS DATA (clean,parse), PROCESS DATA (model)
 
 
-main();
+testSpawn()
+
+
+async function testSpawn(){
+    console.log("I AM SPAWNING A TERMINAL COMMAND!")
+    
+    //TODO: al posto di "dir" mi devi lanciare Rscript ./hello.r
+    const command="dir"
+
+    const child = spawn('cmd.exe', ["/c",command]);
+
+    child.stdout.on('data', data => {
+      console.log(`stdout:\n${data}`);
+    });
+    
+    child.stderr.on('data', data => {
+      console.error(`stderr: ${data}`);
+    });
+
+}
+
+
+
+//main();
 
 async function main() {
     console.log("STARTING PROGRAM")
@@ -78,9 +105,9 @@ async function main() {
     const endIndex = datetimeValues.findIndex((datetime) => datetime >= endOfYesterdayUTC);
 
     // Extract neutrons values for yesterday
-    const yesterdayFinappNeutrons = finappData.neutrons.slice(startIndex, endIndex+1);
+    const yesterdayFinappNeutrons = finappData.neutrons.slice(startIndex, endIndex + 1);
 
-    // Now you have the neutrons values for yesterday in yesterdayNeutrons
+    // Now you have the neutrons values for yesterday in yesterdayNeutrons 
     console.log(yesterdayFinappNeutrons); 
 
     //TODO[1]: dammi la fetta di dati da mezzanotte di ieri a oggi

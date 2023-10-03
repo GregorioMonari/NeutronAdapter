@@ -41,6 +41,7 @@ class FinAppClient {
             //console.log(finappUrl)
             const response = yield axios_1.default.get(finappUrl);
             const data = response.data;
+            //console.log(data)
             return data;
         });
     }
