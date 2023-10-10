@@ -20,16 +20,20 @@ export default async function runRModel(jungData:any,finappData:any){
 
 
 export async function executeRModel(){
-
+    const command="Rscript";
+    const scriptPath="./src/model/processing_imola_v0001.R";
+    const working_dir="./src/model";
+    const response= await spawnSync(command,[scriptPath],working_dir)
+    return response
 }
 
 
-
+//TEST
 export async function spawnHello(){
     const command="Rscript";
     const scriptPath="./src/model/hello.R";
     const working_dir="./src/model";
-    const response= await spawnSync(command,[scriptPath,"test_1"],"./src/model")
+    const response= await spawnSync(command,[scriptPath,"test_1"],working_dir)
     return response
 }
 
