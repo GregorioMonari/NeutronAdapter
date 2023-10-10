@@ -3,10 +3,30 @@ import { FinAppData } from "./client/FinAppClient";
 import NmDbClient from "./client/NmdbClient";
 import { JungData } from "./client/NmdbClient";
 import { spawn } from "child_process";
+import { EventEmitter } from "stream";
 
 
+/*
+console.log("MAO")
+
+const emettitore= new EventEmitter();
+
+emettitore.on("qualcosa",()=>{
+    console.log("HO ASCOLTATO UN EVENTO!")
+})
+
+emettitore.on("notification",(dati:any)=>{
+    console.log("Ho ricevuto una notifica:",dati)
+})
+emettitore.emit("qualcosa")
+emettitore.emit("notification",1)
 
 
+console.log("FINITO IL CODICE")
+*/
+
+
+/*
 // Set the working directory to the location of your R script
 const workingDirectory = 'C:/Users/fravi/Documents/Tirocinio/';
 process.chdir(workingDirectory);
@@ -27,7 +47,7 @@ child.stdout.on('data', (data) => {
 child.stderr.on('data', (data) => {
   console.error(`R Error: ${data}`);
 });
- 
+ */
 
 
 

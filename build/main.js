@@ -1,21 +1,45 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const child_process_1 = require("child_process");
+/*
+console.log("MAO")
+
+const emettitore= new EventEmitter();
+
+emettitore.on("qualcosa",()=>{
+    console.log("HO ASCOLTATO UN EVENTO!")
+})
+
+emettitore.on("notification",(dati:any)=>{
+    console.log("Ho ricevuto una notifica:",dati)
+})
+emettitore.emit("qualcosa")
+emettitore.emit("notification",1)
+
+
+console.log("FINITO IL CODICE")
+*/
+/*
 // Set the working directory to the location of your R script
 const workingDirectory = 'C:/Users/fravi/Documents/Tirocinio/';
 process.chdir(workingDirectory);
+
+
 // Define the Rscript command and the path to your R script
 const command = 'Rscript';
 const scriptPath = 'C:/Users/fravi/Documents/Tirocinio/processing_imola_v0001.R';
+
 // Spawn the Rscript process
-const child = (0, child_process_1.spawn)(command, [scriptPath]);
+const child = spawn(command, [scriptPath]);
+
 // Listen for data from the R process (stdout and stderr)
 child.stdout.on('data', (data) => {
-    console.log(`R Output: ${data}`);
+  console.log(`R Output: ${data}`);
 });
+
 child.stderr.on('data', (data) => {
-    console.error(`R Error: ${data}`);
+  console.error(`R Error: ${data}`);
 });
+ */
 /*
 main();
 
