@@ -5,6 +5,92 @@ import { JungData } from "./client/NmdbClient";
 import { spawn } from "child_process";
 import { EventEmitter } from "stream";
 
+import runRModel, { spawnHello } from "./model/spawnUtils/spawnUtils";
+
+//console.log("CIAO")
+
+
+main()
+
+async function main(){
+    const jclient= new NmDbClient();
+    const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
+    
+    console.log("** FETCHING DATA FROM API")
+    const jungData= await jclient.getRawData("JUNG","2023-08-10","2023-10-09");
+    console.log("Received",jungData.length,"Bytes from Jung")
+    const finappData= await fclient.getRawFinappData(67); 
+    console.log("Received",finappData.length,"Bytes from Finapp")
+
+    console.log("-------------------<START MODEL>-----------------------")
+    const modelOutput= await runRModel(jungData,finappData) //TODO: leggi e scrivi su file
+    console.log("--------------------<END MODEL>------------------------")
+    console.log(modelOutput)
+
+    //TRASFORMA DA STRINGA A JSON CSV CON READ_CSV_FROM_STRING
+    //POI CALCOLA SOIL MOISTURE MEDIA
+
+}
+
+
+
+
+/*
+main()
+async function main(){
+    console.time("R execution time")
+    
+    const command="Rscript";
+    const scriptPath="hello.R";
+    const wd="./src/model"
+    const result=spawnSync(command,[scriptPath],wd)
+    //console.log(result)
+    console.timeEnd("R execution time")
+    //expect(result).toBe("exited!")
+}
+
+function spawnSync(command:string,args:string[],working_dir:string){
+    
+    const child= spawn(command,args,{cwd:"./src/model"});
+    child.stdout.on('data', (data) => {
+        console.log(`R Output: ${data}`);
+    });
+      
+    child.stderr.on('data', (data) => {
+        console.error(`R Error: ${data}`);
+    });
+    
+    child.on("exit",()=>{
+        
+    })
+    
+
+    
+    let fullData=""
+
+    
+    return new Promise((resolve,reject)=>{
+
+        const child= spawn(command,args,{cwd:working_dir});
+        child.stdout.on('data', (data) => {
+            console.log(`R Output: ${data}`);
+            fullData=fullData+data
+        });
+          
+        child.stderr.on('data', (data) => {
+            console.error(`R Error: ${data}`);
+            reject(data);
+        });
+    
+        child.on("exit",()=>{
+            resolve(fullData);
+        })
+
+    })
+    
+}
+*/
+
 
 /*
 console.log("MAO")

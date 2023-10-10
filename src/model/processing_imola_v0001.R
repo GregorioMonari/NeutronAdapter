@@ -29,6 +29,16 @@ pacman::p_load(dplyr,
 #install.packages("readr")
 library(readr)
 
+
+# -------------------------
+# 0. CONNECT WITH JS
+print("CIAONE!")
+baseFilePath <- "dataIO/test"
+
+inputFileJung <- paste(baseFilePath,".in1.csv",sep="")
+inputFileFinapp <- paste(baseFilePath,".in2.csv",sep="")
+outputFile <- paste(baseFilePath,".out.csv",sep="")
+
 # ------------------------------------------------------------------
 # 1. load data and check
 
@@ -48,7 +58,7 @@ T_end_y  <- format(T_end,"%Y")
 #print(jung_string)
 
 #------<DA QUI INIZIA IL MODELLO>-------------------------------------------------------------------------------------
-jung <- read.csv(file="test_Data_Jung.csv",skip=201,sep=";",header = F)
+jung <- read.csv(file=inputFileJung,skip=201,sep=";",header = F)
 colnames(jung) = c("Date","N_jung")
 jung$Date = as.POSIXct(jung$Date, format =" %Y-%m-%d %H:%M:%S")
 jung  <- na.omit(jung)
@@ -204,10 +214,10 @@ plot_08
 db_df <- as.data.frame(db)
 
 # Specify the CSV file path
-csv_filename <- paste("Data/imola_", T_end, ".csv", sep = "")
+#csv_filename <- paste("Data/imola_", T_end, ".csv", sep = "")
 
 # Write the data frame to a CSV file
-write_csv(db_df, path = csv_filename, append = TRUE, col_names = TRUE)
+write_csv(db_df, path = outputFile, append = TRUE, col_names = TRUE)
 
 #ggsave(paste("Figure/",id_file,"_",T_end,".png",sep=""), plot_08,
 #       width = 4, height = 3)
