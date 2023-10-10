@@ -7,6 +7,30 @@ import { spawn } from "child_process";
 
 
 
+// Set the working directory to the location of your R script
+const workingDirectory = 'C:/Users/fravi/Documents/Tirocinio/';
+process.chdir(workingDirectory);
+
+
+// Define the Rscript command and the path to your R script
+const command = 'Rscript';
+const scriptPath = 'C:/Users/fravi/Documents/Tirocinio/processing_imola_v0001.R';  
+
+// Spawn the Rscript process
+const child = spawn(command, [scriptPath]);
+
+// Listen for data from the R process (stdout and stderr)
+child.stdout.on('data', (data) => {
+  console.log(`R Output: ${data}`);
+});
+
+child.stderr.on('data', (data) => {
+  console.error(`R Error: ${data}`);
+});
+ 
+
+
+
 /*
 main();
 
@@ -25,7 +49,7 @@ async function main() {
 //ABBIAMO FATTO 3 COSE: FETCH DATA, PREPROCESS DATA (clean,parse), PROCESS DATA (model)
 
 
-testSpawn()
+/*testSpawn()
 
 
 async function testSpawn(){
@@ -46,10 +70,11 @@ async function testSpawn(){
 
 }
 
+*/
 
 
 //main();
-
+/*
 async function main() {
     console.log("STARTING PROGRAM")
 
@@ -137,10 +162,10 @@ function applyCorrections(jungData:JungData,finappData:FinAppData):number{
     return 0
 }
 
-
-
+*/
 /*
-main()
+
+main() 
 
 async function main(){
 

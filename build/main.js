@@ -1,20 +1,21 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const FinAppClient_1 = __importDefault(require("./client/FinAppClient"));
-const NmdbClient_1 = __importDefault(require("./client/NmdbClient"));
 const child_process_1 = require("child_process");
+// Set the working directory to the location of your R script
+const workingDirectory = 'C:/Users/fravi/Documents/Tirocinio/';
+process.chdir(workingDirectory);
+// Define the Rscript command and the path to your R script
+const command = 'Rscript';
+const scriptPath = 'C:/Users/fravi/Documents/Tirocinio/processing_imola_v0001.R';
+// Spawn the Rscript process
+const child = (0, child_process_1.spawn)(command, [scriptPath]);
+// Listen for data from the R process (stdout and stderr)
+child.stdout.on('data', (data) => {
+    console.log(`R Output: ${data}`);
+});
+child.stderr.on('data', (data) => {
+    console.error(`R Error: ${data}`);
+});
 /*
 main();
 
@@ -30,86 +31,120 @@ async function main() {
 
 */
 //ABBIAMO FATTO 3 COSE: FETCH DATA, PREPROCESS DATA (clean,parse), PROCESS DATA (model)
-testSpawn();
-function testSpawn() {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log("I AM SPAWNING A TERMINAL COMMAND!");
-        //TODO: al posto di "dir" mi devi lanciare Rscript ./hello.r
-        const command = "dir";
-        const child = (0, child_process_1.spawn)('cmd.exe', ["/c", command]);
-        child.stdout.on('data', data => {
-            console.log(`stdout:\n${data}`);
-        });
-        child.stderr.on('data', data => {
-            console.error(`stderr: ${data}`);
-        });
+/*testSpawn()
+
+
+async function testSpawn(){
+    console.log("I AM SPAWNING A TERMINAL COMMAND!")
+    
+    //TODO: al posto di "dir" mi devi lanciare Rscript ./hello.r
+    const command="dir"
+
+    const child = spawn('cmd.exe', ["/c",command]);
+
+    child.stdout.on('data', data => {
+      console.log(`stdout:\n${data}`);
     });
+    
+    child.stderr.on('data', data => {
+      console.error(`stderr: ${data}`);
+    });
+
 }
+
+*/
 //main();
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log("STARTING PROGRAM");
-        const currentDatetime = new Date();
-        // Calculate the midnight of yesterday
-        const midnightYesterday = new Date(currentDatetime);
-        midnightYesterday.setDate(currentDatetime.getDate() - 1);
-        //midnightYesterday.setHours(0, 0, 0, 0);
-        const yesterday = midnightYesterday.toISOString().split("T")[0];
-        console.log(yesterday);
-        // Calculate the midnight of today
-        const midnightToday = new Date(currentDatetime);
-        const today = midnightToday.toISOString().split("T")[0];
-        console.log(today);
-        //TODO[0]: trovami la data corrispondente alla mezzanotte di ieri e di oggi
-        let startDate = yesterday; //mezzanotte di ieri
-        let stopDate = today; //mezzanotte di stamattina
-        //1. GET FINAPP DATA (json con colonne, non la stringa!!!)
-        const excelPath = './resources/id_sensor_baroni.csv';
-        const finappClient = new FinAppClient_1.default(excelPath);
-        const finappData = yield finappClient.getFinappData(1);
-        //console.log(finappData["#Datetime"],finappData.neutrons)
-        // Convert #Datetime strings to Date objects
-        const datetimeValues = finappData["#Datetime"].map((datetimeStr) => new Date(datetimeStr));
-        // Get the current date in the local time zone
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth();
-        const currentDay = currentDate.getDate();
-        // Calculate the start of yesterday (00:00:00 UTC)
-        const startOfYesterdayUTC = new Date(Date.UTC(currentYear, currentMonth, currentDay - 1, 0, 0, 0));
-        // Calculate the end of yesterday (23:00:00 UTC)
-        const endOfYesterdayUTC = new Date(Date.UTC(currentYear, currentMonth, currentDay - 1, 23, 0, 0));
-        // Filter the values for yesterday
-        const yesterdayTimeValues = datetimeValues.filter((datetime) => datetime >= startOfYesterdayUTC && datetime <= endOfYesterdayUTC);
-        // Now you have the values for yesterday (from 00:00:00 to 23:00:00)
-        console.log(yesterdayTimeValues);
-        // Find the index range for yesterday's data
-        const startIndex = datetimeValues.findIndex((datetime) => datetime >= startOfYesterdayUTC);
-        const endIndex = datetimeValues.findIndex((datetime) => datetime >= endOfYesterdayUTC);
-        // Extract neutrons values for yesterday
-        const yesterdayFinappNeutrons = finappData.neutrons.slice(startIndex, endIndex + 1);
-        // Now you have the neutrons values for yesterday in yesterdayNeutrons 
-        console.log(yesterdayFinappNeutrons);
-        //TODO[1]: dammi la fetta di dati da mezzanotte di ieri a oggi
-        let fetta1 = [];
-        //2. GET JUNG DATA (json con colonne)
-        const jungClient = new NmdbClient_1.default();
-        //TODO[2]: instead of today's data, get previous day data starting from 00:00
-        const jungData = yield jungClient.getJungData(yesterday, yesterday); //getJungDataOfToday();
-        console.log(jungData);
-        let fetta2 = [];
-        //3. APPLY MODEL
-        //TODO[3]: scrivi modello di correzione
-        console.log("PROGRAM FINISHED");
-    });
-}
-function applyCorrections(jungData, finappData) {
-    console.log("Jung dates:", jungData.Datetime);
-    const totDates = finappData["#Datetime"].length;
-    console.log("Finapp dates:", finappData["#Datetime"][totDates - 1]);
-    return 0;
-}
 /*
+async function main() {
+    console.log("STARTING PROGRAM")
+
+    const currentDatetime: Date = new Date();
+
+    // Calculate the midnight of yesterday
+    const midnightYesterday: Date = new Date(currentDatetime);
+    midnightYesterday.setDate(currentDatetime.getDate() - 1);
+    //midnightYesterday.setHours(0, 0, 0, 0);
+    const yesterday=midnightYesterday.toISOString().split("T")[0]
+    console.log(yesterday)
+
+    // Calculate the midnight of today
+    const midnightToday: Date = new Date(currentDatetime);
+    const today=midnightToday.toISOString().split("T")[0]
+    console.log(today)
+
+    //TODO[0]: trovami la data corrispondente alla mezzanotte di ieri e di oggi
+    let startDate=yesterday //mezzanotte di ieri
+    let stopDate=today //mezzanotte di stamattina
+
+    //1. GET FINAPP DATA (json con colonne, non la stringa!!!)
+    const excelPath='./resources/id_sensor_baroni.csv';
+    const finappClient= new FinAppClient(excelPath);
+    const finappData= await finappClient.getFinappData(1)
+    //console.log(finappData["#Datetime"],finappData.neutrons)
+
+    // Convert #Datetime strings to Date objects
+    const datetimeValues = finappData["#Datetime"].map((datetimeStr) => new Date(datetimeStr));
+
+    // Get the current date in the local time zone
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
+
+    // Calculate the start of yesterday (00:00:00 UTC)
+    const startOfYesterdayUTC = new Date(Date.UTC(currentYear, currentMonth, currentDay - 1, 0, 0, 0));
+
+    // Calculate the end of yesterday (23:00:00 UTC)
+    const endOfYesterdayUTC = new Date(Date.UTC(currentYear, currentMonth, currentDay - 1, 23, 0, 0));
+
+    // Filter the values for yesterday
+    const yesterdayTimeValues = datetimeValues.filter((datetime) => datetime >= startOfYesterdayUTC && datetime <= endOfYesterdayUTC);
+
+    // Now you have the values for yesterday (from 00:00:00 to 23:00:00)
+    console.log(yesterdayTimeValues);
+
+
+
+    // Find the index range for yesterday's data
+    const startIndex = datetimeValues.findIndex((datetime) => datetime >= startOfYesterdayUTC);
+    const endIndex = datetimeValues.findIndex((datetime) => datetime >= endOfYesterdayUTC);
+
+    // Extract neutrons values for yesterday
+    const yesterdayFinappNeutrons = finappData.neutrons.slice(startIndex, endIndex + 1);
+
+    // Now you have the neutrons values for yesterday in yesterdayNeutrons
+    console.log(yesterdayFinappNeutrons);
+
+    //TODO[1]: dammi la fetta di dati da mezzanotte di ieri a oggi
+    let fetta1=[]
+
+
+    //2. GET JUNG DATA (json con colonne)
+    const jungClient= new NmDbClient();
+    //TODO[2]: instead of today's data, get previous day data starting from 00:00
+    const jungData= await jungClient.getJungData(yesterday,yesterday)//getJungDataOfToday();
+    console.log(jungData)
+    let fetta2=[]
+
+    //3. APPLY MODEL
+    //TODO[3]: scrivi modello di correzione
+
+    console.log("PROGRAM FINISHED")
+}
+
+
+function applyCorrections(jungData:JungData,finappData:FinAppData):number{
+    
+    console.log("Jung dates:",jungData.Datetime)
+    const totDates=finappData["#Datetime"].length
+    console.log("Finapp dates:",finappData["#Datetime"][totDates-1])
+
+    return 0
+}
+
+*/
+/*
+
 main()
 
 async function main(){
