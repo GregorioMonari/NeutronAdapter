@@ -19,22 +19,27 @@ export default async function runRModel(jungData:any,finappData:any){
 
 
 
+export async function executeRModel(){
+
+}
+
 
 
 export async function spawnHello(){
     const command="Rscript";
     const scriptPath="./src/model/hello.R";
-    const response= await spawnSync(command,[scriptPath,"test_1"])
+    const working_dir="./src/model";
+    const response= await spawnSync(command,[scriptPath,"test_1"],"./src/model")
     return response
 }
 
 
-export function spawnSync(command:string,args:string[]){
+export function spawnSync(command:string,args:string[],working_dir:string){
     return new Promise((resolve,reject)=>{
 
         //const command="Rscript";
         //const scriptPath="./src/examples/hello.R";
-        const child= spawn(command,args);
+        const child= spawn(command,args,{cwd:working_dir});
         child.stdout.on('data', (data) => {
             console.log(`R Output: ${data}`);
         });
