@@ -15,16 +15,15 @@ COSA SUCCEDE DENTRO RUNRMODEL
 
 */
 
-//TODO: CAMBIA SOLO QUESTA FUNZIONE
+//!BUG: AL PRIMO AVVIO SE NON C'E' LA CARTELLA INIZIALE CRASHA
 export default async function neutronCount2SoilMoisture(jungData:any,finappData:any){
+    //TODO: settare nome file con la data
     let outStringData="";
     const date= new Date()
     const stringDate= date.toISOString()
     const baseFileName="dataIO/test_2"
 
     try{
-        //TODO: settare nome file con la data
-
         //*FEAT: scrivere jung data e finappData in baseFileName.in1.csv e baseFileName.in2.csv
         fs.writeFileSync("./src/model/"+baseFileName+".in1.csv",jungData);
         fs.writeFileSync("./src/model/"+baseFileName+".in2.csv",finappData);
