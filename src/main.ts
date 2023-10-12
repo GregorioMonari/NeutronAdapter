@@ -5,8 +5,9 @@ import { JungData } from "./client/NmdbClient";
 import { spawn } from "child_process";
 import { EventEmitter } from "stream";
 
-import runRModel, { spawnHello } from "./model/spawnUtils/spawnUtils";
-
+import {runModel } from "./model/spawnUtils/neutronCount2SoilMoisture";
+import neutronCount2SoilMoisture from "./model/spawnUtils/neutronCount2SoilMoisture";
+import { read_csv_from_string } from "./utils/CsvParser";
 //console.log("CIAO")
 
 
@@ -17,18 +18,22 @@ async function main(){
     const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
     
     console.log("** FETCHING DATA FROM API")
-    const jungData= await jclient.getRawData("JUNG","2023-08-10","2023-10-09");
+    //TODO: CHE DATA METTO IN JUNG?
+    const jungData= await jclient.getRawData("JUNG","2023-06-10","2023-10-12");
     console.log("Received",jungData.length,"Bytes from Jung")
     const finappData= await fclient.getRawFinappData(67); 
     console.log("Received",finappData.length,"Bytes from Finapp")
 
-    console.log("-------------------<START MODEL>-----------------------")
-    const modelOutput= await runRModel(jungData,finappData) //TODO: leggi e scrivi su file
-    console.log("--------------------<END MODEL>------------------------")
-    console.log(modelOutput)
+    
+    const modelOutput= await neutronCount2SoilMoisture(jungData,finappData)
+    console.log("Output:",modelOutput.length)
 
-    //TRASFORMA DA STRINGA A JSON CSV CON READ_CSV_FROM_STRING
-    //POI CALCOLA SOIL MOISTURE MEDIA
+    const csvOut= await read_csv_from_string(modelOutput,",");
+    console.log(Object.keys(csvOut))
+
+    //TODO: Calcola media del soil moisture con le date giuste (24 ore del giorno prima) 
+    let soilMoistureMean=0;
+    //...
 
 }
 

@@ -11,6 +11,7 @@
 
 # -------------------------------------------------------------
 # 0. clean and load libraries
+print("### MODEL STARTING ###")
 rm(list = ls())
 
 source("fun_CRNS.R")
@@ -32,8 +33,9 @@ library(readr)
 
 # -------------------------
 # 0. CONNECT WITH JS
-print("CIAONE!")
-baseFilePath <- "dataIO/test"
+args <- commandArgs(trailingOnly = TRUE)
+print(args)
+baseFilePath <- args
 
 inputFileJung <- paste(baseFilePath,".in1.csv",sep="")
 inputFileFinapp <- paste(baseFilePath,".in2.csv",sep="")
@@ -58,20 +60,21 @@ T_end_y  <- format(T_end,"%Y")
 #print(jung_string)
 
 #------<DA QUI INIZIA IL MODELLO>-------------------------------------------------------------------------------------
+print(paste("Reading jung data from file:",inputFileJung))
 jung <- read.csv(file=inputFileJung,skip=201,sep=";",header = F)
 colnames(jung) = c("Date","N_jung")
 jung$Date = as.POSIXct(jung$Date, format =" %Y-%m-%d %H:%M:%S")
 jung  <- na.omit(jung)
 jung  <- xts(jung[2],order.by = jung$Date)
 
-rm(T_end_d,T_end_m,T_end_y,
-   T_ini,T_ini_d,T_ini_m,T_ini_y,
-   jung_string)
+#rm(T_end_d,T_end_m,T_end_y,
+#   T_ini,T_ini_d,T_ini_m,T_ini_y,
+#   jung_string)
 
 # quality check 
-plot_01 <- ggplot(jung)+
-  geom_line(aes(x = Index, y = N_jung))+
-  labs(x="")
+#plot_01 <- ggplot(jung)+
+#  geom_line(aes(x = Index, y = N_jung))+
+#  labs(x="")
 
 # -------------------------------
 # download CRNS data
@@ -93,8 +96,12 @@ SHP <- id$SHP[i]
 bd  <- id$bd[i]
 
 # -------------------------------
-id_name <- paste("https://www.finapptech.com/finapp/api/getCSV_id.php?ID=",id_finapp,"=&D=",id_finapp_detector,sep = "")
-db <- read.table(id_name,header=F, sep = ";")
+#id_name <- paste("https://www.finapptech.com/finapp/api/getCSV_id.php?ID=",id_finapp,"=&D=",id_finapp_detector,sep = "")
+#db <- read.table(id_name,header=F, sep = ";")
+
+# CONTROLLA PERCHE' HO MODIFICATO 
+print(paste("Reading Finapp data from file:",inputFileFinapp))
+db <- read.csv(file=inputFileFinapp,sep=";",header = F)
 colnames(db) <- FINAPP_headers
 db$Datetime <- as.POSIXct(db$Datetime,
                           format ="%Y-%m-%d %H:%M:%S") 

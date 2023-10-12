@@ -32,8 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.spawnSync = exports.spawnHello = exports.executeRModel = void 0;
-const child_process_1 = require("child_process");
+exports.runModel = void 0;
+const core_1 = require("./core");
 const fs = __importStar(require("fs"));
 /*
 FLOW
@@ -49,56 +49,35 @@ COSA SUCCEDE DENTRO RUNRMODEL
 
 */
 //TODO: CAMBIA SOLO QUESTA FUNZIONE
-function runRModel(jungData, finappData) {
+function calculateCorrection(jungData, finappData) {
     return __awaiter(this, void 0, void 0, function* () {
-        const baseFileName = "test";
+        const baseFileName = "dataIO/test_2";
         //TODO 1: scrivere jung data e finappData in baseFileName.in1.csv e baseFileName.in2.csv
+        fs.writeFileSync("./src/model/" + baseFileName + ".in1.csv", jungData);
+        fs.writeFileSync("./src/model/" + baseFileName + ".in2.csv", finappData);
         //TODO 2: spawn model
-        yield executeRModel();
+        console.log("---------<Starting R model>-----------");
+        console.time("Model execution time");
+        const consoleOutput = yield runModel(baseFileName);
+        console.log(">> R MODEL OUTPUT");
+        console.log(consoleOutput.out);
+        console.timeEnd("Model execution time");
+        console.log(">> Errors");
+        console.log(consoleOutput.err);
+        console.log("---------<R model END>-----------");
         //TODO 3: leggi output da baseFileName.out.csv
-        const outStringData = fs.readFileSync("./src/model/dataIO/test.out.csv");
+        const outStringData = fs.readFileSync("./src/model/" + baseFileName + ".out.csv");
         return outStringData.toString();
     });
 }
-exports.default = runRModel;
-function executeRModel() {
+exports.default = calculateCorrection;
+function runModel(baseFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const command = "Rscript";
         const scriptPath = "processing_imola_v0001.R";
         const working_dir = "./src/model";
-        const response = yield spawnSync(command, [scriptPath], working_dir);
+        const response = yield (0, core_1.spawnSync)(command, [scriptPath, baseFilePath], working_dir);
         return response;
     });
 }
-exports.executeRModel = executeRModel;
-//TEST
-function spawnHello() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const command = "Rscript";
-        const scriptPath = "hello.R";
-        const working_dir = "./src/model";
-        const response = yield spawnSync(command, [scriptPath, "test_1"], working_dir);
-        return response;
-    });
-}
-exports.spawnHello = spawnHello;
-function spawnSync(command, args, working_dir) {
-    let out = "";
-    return new Promise((resolve, reject) => {
-        //const command="Rscript";
-        //const scriptPath="./src/examples/hello.R";
-        const child = (0, child_process_1.spawn)(command, args, { cwd: working_dir });
-        child.stdout.on('data', (data) => {
-            //console.log(`R Output: ${data}`);
-            out = out + data;
-        });
-        child.stderr.on('data', (data) => {
-            console.error(`R Error: ${data}`);
-            //reject(data);
-        });
-        child.on("exit", () => {
-            resolve(out);
-        });
-    });
-}
-exports.spawnSync = spawnSync;
+exports.runModel = runModel;

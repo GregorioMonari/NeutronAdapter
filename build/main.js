@@ -14,7 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const FinAppClient_1 = __importDefault(require("./client/FinAppClient"));
 const NmdbClient_1 = __importDefault(require("./client/NmdbClient"));
-const spawnUtils_1 = __importDefault(require("./model/spawnUtils/spawnUtils"));
+const neutronCount2SoilMoisture_1 = __importDefault(require("./model/spawnUtils/neutronCount2SoilMoisture"));
+const CsvParser_1 = require("./utils/CsvParser");
 //console.log("CIAO")
 main();
 function main() {
@@ -22,16 +23,14 @@ function main() {
         const jclient = new NmdbClient_1.default();
         const fclient = new FinAppClient_1.default("../resources/id_sensor_baroni.csv");
         console.log("** FETCHING DATA FROM API");
-        const jungData = yield jclient.getRawData("JUNG", "2023-08-10", "2023-10-09");
+        const jungData = yield jclient.getRawData("JUNG", "2023-06-10", "2023-10-12");
         console.log("Received", jungData.length, "Bytes from Jung");
         const finappData = yield fclient.getRawFinappData(67);
         console.log("Received", finappData.length, "Bytes from Finapp");
-        console.log("-------------------<START MODEL>-----------------------");
-        const modelOutput = yield (0, spawnUtils_1.default)(jungData, finappData); //TODO: leggi e scrivi su file
-        console.log("--------------------<END MODEL>------------------------");
-        console.log(modelOutput);
-        //TRASFORMA DA STRINGA A JSON CSV CON READ_CSV_FROM_STRING
-        //POI CALCOLA SOIL MOISTURE MEDIA
+        const modelOutput = yield (0, neutronCount2SoilMoisture_1.default)(jungData, finappData); //TODO: leggi e scrivi su file
+        console.log("Output:", modelOutput.length);
+        const csvOut = yield (0, CsvParser_1.read_csv_from_string)(modelOutput, ",");
+        console.log(Object.keys(csvOut));
     });
 }
 /*
