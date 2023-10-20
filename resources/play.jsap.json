@@ -1,0 +1,82 @@
+{
+    "host": "dld.arces.unibo.it",
+    "oauth": {
+        "enable": false,
+        "register": "https://localhost:8443/oauth/register",
+        "tokenRequest": "https://localhost:8443/oauth/token"
+    },
+    "sparql11protocol": {
+        "protocol": "http",
+        "port": 8668,
+        "query": {
+            "path": "/query",
+            "method": "POST",
+            "format": "JSON"
+        },
+        "update": {
+            "path": "/update",
+            "method": "POST",
+            "format": "JSON"
+        }
+    },
+    "sparql11seprotocol": {
+        "reconnect": true,
+        "protocol": "ws",
+        "availableProtocols": {
+            "ws": {
+                "port": 9668,
+                "path": "/subscribe"
+            },
+            "wss": {
+                "port": 443,
+                "path": "/subscribe"
+            }
+        }
+    },
+    "graphs": {
+        
+    },
+    "namespaces": {
+        "schema": "http://schema.org/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "sosa": "http://www.w3.org/ns/sosa/",
+        "qudt": "http://qudt.org/schema/qudt#",
+        "unit": "http://qudt.org/vocab/unit#",
+        "mqtt": "http://wot.arces.unibo.it/mqtt#",
+        "time": "http://www.w3.org/2006/time#",
+        "wgs84_pos": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+        "gn": "http://www.geonames.org/ontology#",
+        "weather": "https://vaimee.com/vaimee/weather/",
+        "criteria": "https://vaimee.com/vaimee/criteria/",
+        "criteriaProperty": "https://vaimee.com/vaimee/criteria/property#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "vaimee": "https://vaimee.com/vaimee#",
+        "vaimeeSensor": "https://vaimee.com/vaimee/sensors#",
+        "agri":"http://agrincesco.com/ontoagri/"
+    },
+    "extended": {},
+    "queries": {
+        "forecast": {
+            "sparql": "SELECT * WHERE {   GRAPH weather:forecast {    ?observation rdf:type sosa:Observation ;      sosa:hasFeatureOfInterest ?feature ;      sosa:observedProperty ?property ;  weather:recordCount ?recordCount;    sosa:resultTime ?time ;      sosa:phenomenonTime ?ptime ;      sosa:hasResult ?result .    ?result rdf:type qudt:QuantityValue ;      rdf:type sosa:Result;      sosa:isResultOf  ?observation;      qudt:unit ?unit ;      qudt:numericValue ?value .  } }"
+        },
+        "history": {
+            "sparql": "SELECT * WHERE {   GRAPH weather:history {    ?observation rdf:type sosa:Observation ;      sosa:hasFeatureOfInterest ?feature ;      sosa:observedProperty ?property ;   weather:recordCount ?recordCount;   sosa:resultTime ?time ;      sosa:hasResult ?result .    ?result rdf:type qudt:QuantityValue ;      rdf:type sosa:Result;      sosa:isResultOf  ?observation;      qudt:unit ?unit ;      qudt:numericValue ?value .  } }"
+        },
+        "getAllData": {
+            "sparql": "SELECT * WHERE { ?s ?p ?o }"
+        },
+        "getPeople":{
+            "sparql": "SELECT * WHERE { GRAPH agri:people {?s ?p ?o}}"
+        }
+    },
+    
+    "updates": {
+        "uploadCriteriaSensorData" : {
+            "sparql" : "INSERT DATA { GRAPH criteria:sensors { _:observation rdf:type sosa:Observation ; criteria:sensorId ?sensorId;  criteria:portNumber ?portNumber; sosa:observedProperty \"waterContent\" ; sosa:resultTime ?date; criteria:layerNumber  ?layerNumber; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit \"m3/m3*mm\" ; qudt:numericValue ?value}}"
+        },
+        "addPerson":{
+            "sparql": "INSERT DATA { GRAPH agri:people { agri:Greg agri:hasHairColor 'blonde' }}"
+        }
+    }
+}

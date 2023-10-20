@@ -1,5 +1,7 @@
 import { spawnSync } from './core';
 import * as fs from 'fs';
+import { read_csv_from_string } from '../../utils/CsvParser';
+import { ModelOutput } from '../../types/model-interface';
 
 /*
 FLOW
@@ -14,9 +16,13 @@ COSA SUCCEDE DENTRO RUNRMODEL
 3. Leggo il file out e ritorno la stringa csv
 
 */
+function getSoilMoistureMean():number{
+
+}
+
 
 //!BUG: AL PRIMO AVVIO SE NON C'E' LA CARTELLA INIZIALE CRASHA
-export default async function neutronCount2SoilMoisture(jungData:any,finappData:any){
+export default async function neutronCount2SoilMoisture(jungData:any,finappData:any):Promise<ModelOutput>{
     //TODO: settare nome file con la data
     let outStringData="";
     const date= new Date()
@@ -50,7 +56,9 @@ export default async function neutronCount2SoilMoisture(jungData:any,finappData:
     fs.unlinkSync("./src/model/"+baseFileName+".in1.csv")
     fs.unlinkSync("./src/model/"+baseFileName+".in2.csv")
     fs.unlinkSync("./src/model/"+baseFileName+".out.csv")
-    return outStringData
+    const csvOut= await read_csv_from_string(outStringData,",");
+    console.log(csvOut)
+    return csvOut
 }
 
 export async function runModel(baseFilePath:string){

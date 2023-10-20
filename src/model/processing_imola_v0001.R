@@ -62,7 +62,7 @@ T_end_y  <- format(T_end,"%Y")
 #------<DA QUI INIZIA IL MODELLO>-------------------------------------------------------------------------------------
 print(paste("Reading jung data from file:",inputFileJung))
 jung <- read.csv(file=inputFileJung,skip=201,sep=";",header = F)
-colnames(jung) = c("Date","N_jung")
+colnames(jung) = c("Date","N_jung") 
 jung$Date = as.POSIXct(jung$Date, format =" %Y-%m-%d %H:%M:%S")
 jung  <- na.omit(jung)
 jung  <- xts(jung[2],order.by = jung$Date)
@@ -111,9 +111,10 @@ db <- xts(db[,-1],order.by = db$Datetime) # needed to convert db in an "xts" obj
 rm(id,FINAPP_headers,i, id_finapp, id_name, id_finapp_detector)
 
 # quality check
-plot_02 <- ggplot(db)+
-  geom_line(aes(x = Index, y = neutrons))+
-  labs(x="")
+#plot_02 <- ggplot(db)+
+#  geom_line(aes(x = Index, y = neutrons))+
+#  labs(x="")
+
 #ggplotly(plot_02)
 
 # range between mean +- 5sd
@@ -126,11 +127,11 @@ db$neutrons[db$neutrons<lower_limit] <- NA
 db <- na.omit(db)
 #print(db)
 
-plot_03 <- ggplot(db)+
-  geom_line(aes(x = Index, y = neutrons))+
-  labs(x="")
+#plot_03 <- ggplot(db)+
+#  geom_line(aes(x = Index, y = neutrons))+
+#  labs(x="")
 
-ggplotly(plot_02)
+#ggplotly(plot_02)
 
 rm(lower_limit,upper_limit)
 
@@ -153,40 +154,40 @@ db$fi = (mean(db$N_jung)/db$N_jung)
 # pressure correction fp
 # GB: to double check standard lambda value
 
-plot_04 <- ggplot(db)+
-  geom_line(aes(x = Index, y = pressure.hPa.))
-ggplotly(plot_04)
+#plot_04 <- ggplot(db)+
+#  geom_line(aes(x = Index, y = pressure.hPa.))
+#ggplotly(plot_04)
 
 lambda = 1/0.0076 #see Schron et al. 2018
 # reference pressure to be defined in case of a network
 ref_p <- mean(db$pressure.hPa.,na.rm=T)
 db$fp <- exp((db$pressure.hPa. - ref_p)/lambda)
 
-plot_05  <- ggplot(db)+
-  geom_line(aes(Index,fp),col=1)+
-  geom_line(aes(Index,fi),col=2)+
-  ylim(0.8,1.2)
+#plot_05  <- ggplot(db)+
+#  geom_line(aes(Index,fp),col=1)+
+#  geom_line(aes(Index,fi),col=2)+
+#  ylim(0.8,1.2)
 
-ggplotly(plot_05)
+#ggplotly(plot_05)
 
 # correct neutrons
 db$Nc <- db$neutrons * db$fp * db$fi
 
-plot_06 <- ggplot(db)+
-  geom_line(aes(x = Index, y = neutrons),col=1)+
-  geom_line(aes(x = Index, y = Nc),col=2)
+#plot_06 <- ggplot(db)+
+#  geom_line(aes(x = Index, y = neutrons),col=1)+
+#  geom_line(aes(x = Index, y = Nc),col=2)
   # ylim(600,1300)
 
-ggplotly(plot_06)
+#ggplotly(plot_06)
 
 # Apply a Savitzky-Golay smoothing filter
 win_SGF  <-  51
 db$Nc_SGF <-  sgolayfilt(db$Nc, n = win_SGF)
 
-plot_07 <- ggplot(db)+
-  geom_line(aes(x = Index, y = Nc),col=1)+
-  geom_line(aes(x = Index, y = Nc_SGF),col=2,size=1.1)
-plot_07
+#plot_07 <- ggplot(db)+
+#  geom_line(aes(x = Index, y = Nc),col=1)+
+#  geom_line(aes(x = Index, y = Nc_SGF),col=2,size=1.1)
+#plot_07
 
 # calibration Desilet equation (conversione per l'umidità)
 db$SM <-  f_Desilets(db$Nc_SGF,N0,SHP,bd)
@@ -198,18 +199,18 @@ db$SM <-  f_Desilets(db$Nc_SGF,N0,SHP,bd)
 start.end <- c(as.POSIXct("2023-03-24 12:00"), 
                as.POSIXct("2023-09-14 12:00"))
 
-plot_08 <- ggplot(db)+
-  geom_line(aes(x = Index, y = SM))+
-  ylim(0.05,0.55)+
-  scale_x_datetime(limits = start.end,
-                   date_breaks="10 day", 
-                   minor_breaks=NULL, 
-                   date_labels="%d/%m/%y")+
-  labs(x="",
-       y="Soil moisture",
-       title = id_file)
+#plot_08 <- ggplot(db)+
+#  geom_line(aes(x = Index, y = SM))+
+#  ylim(0.05,0.55)+
+#  scale_x_datetime(limits = start.end,
+#                   date_breaks="10 day", 
+#                   minor_breaks=NULL, 
+#                   date_labels="%d/%m/%y")+
+#  labs(x="",
+#       y="Soil moisture",
+#       title = id_file)
 
-plot_08
+#plot_08
 # ggplotly(plot_08)
 
 # -------------------------------------------------------------
@@ -223,8 +224,13 @@ db_df <- as.data.frame(db)
 # Specify the CSV file path
 #csv_filename <- paste("Data/imola_", T_end, ".csv", sep = "")
 
+db_with_datetime <- data.frame(
+  DateTime = index(db),  # 'index' retrieves the date-time from 'db'
+  db  # Include all other columns from 'db'
+)
+
 # Write the data frame to a CSV file
-write_csv(db_df, path = outputFile, append = TRUE, col_names = TRUE)
+write_csv(db_with_datetime, path = outputFile, append = TRUE, col_names = TRUE)
 
 #ggsave(paste("Figure/",id_file,"_",T_end,".png",sep=""), plot_08,
 #       width = 4, height = 3)
