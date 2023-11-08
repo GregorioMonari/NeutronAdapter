@@ -33,8 +33,10 @@
     "date-fns": "^2.30.0",
     "fast-csv": "^4.3.6",
     "fs": "^0.0.1-security",
+    "greglogs": "^1.0.2",
     "luxon": "^3.4.3",
     "nodemon": "^3.0.1",
+    "pacfactory": "^0.1.6",
     "papaparse": "^5.4.1"
   },
   "devDependencies": {

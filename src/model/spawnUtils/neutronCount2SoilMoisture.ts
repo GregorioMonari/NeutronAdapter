@@ -16,10 +16,41 @@ COSA SUCCEDE DENTRO RUNRMODEL
 3. Leggo il file out e ritorno la stringa csv
 
 */
-function getSoilMoistureMean():number{
+export async function calculateSMYesterday(csvOut: ModelOutput) {
+    // Calculate the date for yesterday
+    const today = new Date();
+    const yesterdayDateObj = new Date(today);
+    yesterdayDateObj.setDate(today.getDate() - 1);
+    const yesterday = yesterdayDateObj.toISOString().split("T")[0];
 
-}
+    // EXTRACT DATES COLUMN FROM CSV
+    const dates = csvOut["DateTime"];
 
+    // EXTRACT SM COLUMN FROM CSV
+    const SM = csvOut.SM;
+    const SMYesterday = [];
+
+    let currIndex = 0; 
+    for (const date of dates) {
+        const day = date.split("T")[0];
+        if (day === yesterday) {
+            //console.log("FOUND! at index:" + currIndex);
+            const SMvalue = SM[currIndex];
+            SMYesterday.push(SMvalue);
+        }
+        currIndex++;
+    }
+
+    let sum = 0;
+    for (let i = 0; i < SMYesterday.length; i++) {
+        sum += parseFloat(SMYesterday[i]);
+    }
+
+    console.log(SMYesterday)
+    const SMmean = sum / SMYesterday.length;
+
+    return SMmean; 
+} 
 
 //!BUG: AL PRIMO AVVIO SE NON C'E' LA CARTELLA INIZIALE CRASHA
 export default async function neutronCount2SoilMoisture(jungData:any,finappData:any):Promise<ModelOutput>{
@@ -57,7 +88,7 @@ export default async function neutronCount2SoilMoisture(jungData:any,finappData:
     fs.unlinkSync("./src/model/"+baseFileName+".in2.csv")
     fs.unlinkSync("./src/model/"+baseFileName+".out.csv")
     const csvOut= await read_csv_from_string(outStringData,",");
-    console.log(csvOut)
+    //console.log(csvOut)
     return csvOut
 }
 

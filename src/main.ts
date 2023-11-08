@@ -10,8 +10,191 @@ import neutronCount2SoilMoisture from "./model/spawnUtils/neutronCount2SoilMoist
 import { read_csv_from_string } from "./utils/CsvParser";
 import { DateTime } from "luxon";
 import { CronJob } from "cron";
+import { calculateSMYesterday } from "./model/spawnUtils/neutronCount2SoilMoisture";
 
-//console.log("CIAO")
+import { Producer,Consumer } from "pacfactory";
+const jsap= require("../resources/play.jsap.json");
+import PlantsConsumer from "./pac/consumers/PlantsConsumer";
+import GraphCleaner from "./pac/producers/GraphCleaner";
+import WeedsConsumer from "./pac/consumers/WeedsConsumer";
+import WeedsGraphCleaner from "./pac/producers/WeedsGraphCleaner";
+const log= require("greglogs").default;
+log.setLogLevel(4); //per più info metti a 0
+
+//console.log(jsap)
+/**
+//TODO
+1. creare una coppia di query-update, ovvero:
+    - NOTA: deve avere un parametro numerico tipo AvailableWater
+    - scrivere il testo della query e update (testarlo sulla dashboard se necessario)
+    - copia la query e l'update nel jsap e dagli un nome
+    - leva le costanti e aggiungi forced bindings
+2. Creare un produttore e consumatore per poter operare con queste query da js
+    - usa quello base, tipo const consumer= new Consumer(jsap,"queryName",{})
+3. Crea un piccolo programma che usa questi moduli pac
+    - ripulisci grafico
+    - fammi 3-4 update con piante diverse
+    - fai la query e stampami i risultati
+4. Aggiungi subscription
+    - iscriviti alle piante
+    - quando ricevi una nuova notifica (on added results):
+        - checka se l'available water è sotto un valore di soglia che inventi tu
+        - if(availableWater<soglia)
+            - fai un update al sepa mandando un allarme! (_:b rdf:type agri:Alarm)
+    - ora che ti sei iscritto, manda l'update con una nuova pianta e available water deciso da te
+ 
+# QUINDI ALLA FINE USIAMO I SEGUENTI MODULI PAC
+- PlantsConsumer
+- PlantsProducer -> è quello che fa partire la sub
+- Alarm Producer
+
+
+#CHE METODI CI INTERESSANO
+await producer.updateSepa({...})
+await consumer.querySepa({})
+consumer.on("addedResults",()=>{ 
+    ...
+})
+consumer.subscribeToSepa()
+ 
+    */
+
+
+
+
+main()
+
+async function main(){ 
+
+
+/*
+
+    const plantsConsumer = new PlantsConsumer(jsap);
+    const graphCleaner = new GraphCleaner(jsap);
+    const plantsProducer = new Producer(jsap,"addPlant")
+    //plantsConsumer.log.logLevel=3;
+
+    //PULISCI GRAFO
+    await graphCleaner.cleanPlants();
+
+    //QUERY (dovrebbe essere vuota)
+    console.log("Graph cleaned")
+    let queryResult= await plantsConsumer.querySepa();
+    console.log("QueryResult:",queryResult)  
+
+
+    plantsConsumer.on("firstResults",(not:any)=>{
+        //console.log(not)
+    })
+    plantsConsumer.on("addedResults",(not:any)=>{
+        const bindings=not.getBindings()
+        console.log("Ho aggiunto una pianta!:",bindings)
+    })
+    plantsConsumer.on("removedResults",(not:any)=>{
+        //console.log(not)
+    })
+    
+    plantsConsumer.subscribeToSepa()
+
+
+    await wait(1000);
+
+    //UPDATE
+    const plants=["Potato","Tomato","Strawberry"]
+    const colors=["Yellow","Red","Red"]
+    for(var i=0;i<plants.length;i++){
+        console.log("Sto inserendo:",plants[i])
+        await plantsProducer.updateSepa({
+            plantName:plants[i],
+            plantColor:colors[i]
+        });
+        await wait(1000);
+    }
+
+
+    //queryResult= await plantsConsumer.querySepa();
+    //console.log("QueryResult:",queryResult) 
+
+}
+
+
+
+async function wait(ms:number){
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+    })
+}
+
+*/
+    const weedsConsumer = new WeedsConsumer(jsap);
+    const graphCleaner = new WeedsGraphCleaner(jsap);
+    const weedsProducer = new Producer(jsap,"addWeedVariety")
+    //plantsConsumer.log.logLevel=3;
+
+    //PULISCI GRAFO 
+    await graphCleaner.cleanWeeds();
+
+    //QUERY (dovrebbe essere vuota)
+    console.log("Graph cleaned")
+    let queryResult= await weedsConsumer.querySepa();
+    console.log("QueryResult:",queryResult)  
+
+
+    weedsConsumer.on("firstResults",(not:any)=>{
+        //console.log(not)
+    })
+    weedsConsumer.on("addedResults",(not:any)=>{
+        const bindings=not.getBindings()
+        console.log("Ho aggiunto una pianta!:",bindings)
+    })
+    weedsConsumer.on("removedResults",(not:any)=>{
+        //console.log(not)
+    })
+
+    weedsConsumer.subscribeToSepa()
+
+
+    await wait(1000);
+
+    //UPDATE
+    const weeds=["Amnesia","Blueberry","BigBuddaCheese"]
+    const thc=["23","20","18"]
+    const effect=["sativa","indica","halfAndHalf"]
+    for(var i=0;i<weeds.length;i++){
+        console.log("Sto inserendo:",weeds[i])
+        await weedsProducer.updateSepa({
+            weedName:weeds[i],
+            thcLevel:thc[i],
+            weedEffect:effect[i]
+        });
+        await wait(1000);
+    }
+
+
+    //queryResult= await plantsConsumer.querySepa();
+    //console.log("QueryResult:",queryResult) 
+
+    }
+
+
+
+    async function wait(ms:number){
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+    })
+    }
+
+
+
+
+
+
+
+
+
+
+
+//CRON---------------------------------------------------------------------------------------
 /*
 TODO: 
 1- metti media del soil moisture nella funzione getSoilMOistureMean
@@ -26,36 +209,46 @@ const cronPatterns={
     "every5seconds":"*/5 * * * * *",
     "every10seconds":"*/10 * * * * *",
     "everyDayAt-currTimeZone":"25 14 * * *",
-    "everyDayAt-UTC":"27 12 * * *",
+    "everyDayAt-UTC":"56 13 * * *",
 }
+/*
 
 function task(){
     const date= new Date()
     console.log("Cron job started at",date.toISOString())
 }
 
-
-main()
-
-
-async function main(){
-    console.log("MAIN STARTED")
-}
+*/
 
 
 /*
 async function main(){
     console.log("MAIN STARTED")
-
-    const unitTime="11:30"
-    const sensorId="JUNG.67"
-
-    const job= new CronJob(cronPatterns["every10seconds"],task,null,false,"UTC");
-    job.start()
 }
 */
 
 /*
+async function main(){
+    console.log("MAIN STARTED")
+
+    const unitTime="14:00" 
+    const sensorId="JUNG.67"
+    // Extract the hours and minutes from unitTime
+    const [hours, minutes] = unitTime.split(':');
+
+    // Create the cron pattern for running at 11:30 AM in your current time zone
+    const cronPattern = `0 ${minutes} ${hours} * * *`;
+
+    const job = new CronJob(cronPattern, ()=>{
+        console.log(sensorId)
+    }, null, false, "Europe/Rome");
+    job.start()
+
+}
+
+/*main()
+
+
 async function main(){
     const jclient= new NmDbClient();
     const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
@@ -73,82 +266,9 @@ async function main(){
     //console.log("Output:",modelOutput.length)
 
 
+    const SMmean = await calculateSMYesterday(csvOut);
 
-    //console.log(Object.keys(csvOut))
-    //console.log(csvOut.SM)
-    //console.log(typeof csvOut) 
-    //console.log(csvOut.DateTime)
-    // Access the CSV data property from the object
-    
-
-    //----------------------------------------------------------
-    // Calculate the date for yesterday
-    const yesterdayDateObj = new Date(today);
-    yesterdayDateObj.setDate(today.getDate() - 1); 
-    //console.log(yesterdayDateObj)
-    const yesterday= yesterdayDateObj.toISOString().split("T")[0]
-    console.log(yesterday)
-
-    //EXTRACT DATES COLUMN FROM CSV
-    const dates= csvOut["DateTime"]
-    //console.log(dates[0])
-
-    //EXTRACT SM COLUMN FROM CSV
-    const SM= csvOut.SM
-    const SMYesterday= []
-
-    let startIndex=0;
-    let stopIndex=0;
-    let currIndex=0;
-    for(const date of dates){
-        const day= date.split("T")[0]
-        //console.log(" ")
-        //console.log(day)
-        //console.log(yesterday)
-        if(day==yesterday){
-            console.log("FOUND! at index:"+currIndex)
-            const SMvalue= SM[currIndex]
-            SMYesterday.push(SMvalue)
-        }
-        currIndex++
-    }
-    console.log(SMYesterday)
-
-    let sum = 0;
-
-    for (let i = 0; i < SMYesterday.length; i++) {
-    sum += parseFloat(SMYesterday[i]);
-    }
-
-    const SMmean= sum/SMYesterday.length
-
-    console.log(SMmean)
-
-    //console.log(currIndex)
-    
-
-
-    // Format the date for yesterday in the same format as your data
-    //const formattedDate = yesterday.toISOString().split('T')[0];
-    //console.log(formattedDate)
-
-   
-
-    //const index = csvOut.Datetime.indexOf(formattedDate);
-
-    // Get the corresponding "SM" value for yesterday
-    //const SMYesterday = csvOut.SM[index];
-
-    //console.log(SMYesterday);     
-        
-    
-
-
-
-    //TODO: Calcola media del soil moisture con le date giuste (24 ore del giorno prima) 
-    //let soilMoistureMean=0;
-    //...
-
+    console.log("Soil Moisture Mean of the Previous Day: " + SMmean); 
 }
+    // Access the CSV data property from the object
 */
-

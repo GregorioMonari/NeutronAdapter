@@ -68,15 +68,68 @@
         },
         "getPeople":{
             "sparql": "SELECT * WHERE { GRAPH agri:people {?s ?p ?o}}"
+        },
+        "getPlantsNamesAndColors":{
+            "sparql":"SELECT * WHERE  { graph agri:Plants {?s rdf:type agri:Plants . ?s agri:name ?name . ?s agri:hasProperties ?s2 . ?s2 agri:colour ?color . }}"
+        },
+        "getPlantFeature":{
+            "sparql":""
+        },
+        "getWeedInfo":{
+            "sparql":"SELECT * WHERE { graph agri:Weeds {?s rdf:type agri:Weeds . ?s agri:varietyName ?varietyName . ?s agri:hasProperties ?s2 . ?s2 agri:thc ?thcLevel . ?s2 agri:effect ?effect . }}"
         }
     },
     
     "updates": {
+        "deleteGraphContent":{
+            "sparql":"DELETE { GRAPH ?graph {?s ?p ?o} } WHERE { GRAPH ?graph {?s ?p ?o}}",
+            "forcedBindings":{
+                "graph":{
+                    "type":"uri"
+                }
+            }
+        },
         "uploadCriteriaSensorData" : {
             "sparql" : "INSERT DATA { GRAPH criteria:sensors { _:observation rdf:type sosa:Observation ; criteria:sensorId ?sensorId;  criteria:portNumber ?portNumber; sosa:observedProperty \"waterContent\" ; sosa:resultTime ?date; criteria:layerNumber  ?layerNumber; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit \"m3/m3*mm\" ; qudt:numericValue ?value}}"
         },
         "addPerson":{
             "sparql": "INSERT DATA { GRAPH agri:people { agri:Greg agri:hasHairColor 'blonde' }}"
+        },
+        "addPlant": {
+            "sparql":"INSERT DATA { graph agri:Plants { _:b rdf:type agri:Plants . _:b agri:name ?plantName . _:b agri:hasProperties _:b2 . _:b2 agri:colour ?plantColor . }}",
+            "forcedBindings":{
+                "plantName":{
+                    "type": "literal"
+                },
+                "plantColor":{
+                    "type":"literal"
+                }
+            }
+        },
+        "addPlantFull": {
+            "sparql":"INSERT DATA { graph agri:Plants { _:b rdf:type agri:Plants . _:b agri:name ?plantName . _:b agri:hasProperties _:b2 . _:b2 agri:colour ?plantColor . }}",
+            "forcedBindings":{
+                "plantName":{
+                    "type": "literal"
+                },
+                "plantColor":{
+                    "type":"literal"
+                }
+            }
+        },
+        "addWeedVariety": {
+            "sparql": "INSERT DATA { graph agri:Weeds { _:b rdf:type agri:Plants . _:b agri:varietyName ?varietyName . _:b agri:hasProperties _:b2 . _:b2 agri:thc ?thcLevel . _:b2 agri:effect ?effect . }}",
+            "forcedBindings":{
+                "varietyName":{
+                    "type":"literal"
+                },
+                "thcLevel":{
+                    "type":"literal"
+                },
+                "effect":{
+                    "type":"literal"
+                }
+            }
         }
     }
 }
