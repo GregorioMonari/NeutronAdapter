@@ -143,7 +143,7 @@ async function main(){
     let queryResult= await weedsConsumer.querySepa();
     console.log("QueryResult:",queryResult)  
 
-    weedsConsumer.subscribeToSepa()
+    
 
     weedsConsumer.on("firstResults",(not:any)=>{
         //console.log(not)
@@ -156,7 +156,7 @@ async function main(){
         //console.log(not)
     })
 
-    
+    weedsConsumer.subscribeToSepa()
 
 
     await wait(5000);
