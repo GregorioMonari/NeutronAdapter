@@ -18,7 +18,7 @@ import PlantsConsumer from "./pac/consumers/PlantsConsumer";
 import GraphCleaner from "./pac/producers/GraphCleaner";
 import WeedsConsumer from "./pac/consumers/WeedsConsumer";
 import WeedsGraphCleaner from "./pac/producers/WeedsGraphCleaner";
-const log= require("greglogs").default;
+const log= require("greglogs").default; 
 log.setLogLevel(4); //per più info metti a 0
 
 //console.log(jsap)
@@ -58,23 +58,22 @@ consumer.on("addedResults",()=>{
 consumer.subscribeToSepa()
  
     */
-
-
-
-
+/*
 main()
-
 async function main(){ 
 
 
-/*
+
+
+
+
 
     const plantsConsumer = new PlantsConsumer(jsap);
     const graphCleaner = new GraphCleaner(jsap);
     const plantsProducer = new Producer(jsap,"addPlant")
     //plantsConsumer.log.logLevel=3;
 
-    //PULISCI GRAFO
+    //PULISCI GRAFO 
     await graphCleaner.cleanPlants();
 
     //QUERY (dovrebbe essere vuota)
@@ -118,14 +117,19 @@ async function main(){
 }
 
 
-
 async function wait(ms:number){
     return new Promise(resolve=>{
         setTimeout(resolve,ms)
     })
 }
-
 */
+
+
+
+
+main()
+async function main(){ 
+
     const weedsConsumer = new WeedsConsumer(jsap);
     const graphCleaner = new WeedsGraphCleaner(jsap);
     const weedsProducer = new Producer(jsap,"addWeedVariety")
@@ -139,6 +143,7 @@ async function wait(ms:number){
     let queryResult= await weedsConsumer.querySepa();
     console.log("QueryResult:",queryResult)  
 
+    weedsConsumer.subscribeToSepa()
 
     weedsConsumer.on("firstResults",(not:any)=>{
         //console.log(not)
@@ -151,10 +156,10 @@ async function wait(ms:number){
         //console.log(not)
     })
 
-    weedsConsumer.subscribeToSepa()
+    
 
 
-    await wait(1000);
+    await wait(5000);
 
     //UPDATE
     const weeds=["Amnesia","Blueberry","BigBuddaCheese"]
@@ -166,7 +171,7 @@ async function wait(ms:number){
             weedName:weeds[i],
             thcLevel:thc[i],
             weedEffect:effect[i]
-        });
+        }); 
         await wait(1000);
     }
 
