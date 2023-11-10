@@ -1,5 +1,5 @@
 {
-    "host": "tasks.engine",
+    "host": "dld.arces.unibo.it",
     "oauth": {
         "enable": false,
         "register": "https://localhost:8443/oauth/register",
@@ -7,7 +7,7 @@
     },
     "sparql11protocol": {
         "protocol": "http",
-        "port": 8000,
+        "port": 8668,
         "query": {
             "path": "/query",
             "method": "POST",
@@ -24,7 +24,7 @@
         "protocol": "ws",
         "availableProtocols": {
             "ws": {
-                "port": 9000,
+                "port": 9668,
                 "path": "/subscribe"
             },
             "wss": {
@@ -666,6 +666,10 @@
     },
     
     "updates": {
+        "cleanSensorData":{
+            "sparql":"DELETE { GRAPH criteria:sensors { ?s ?p ?o} } WHERE { GRAPH criteria:sensors { ?s ?p ?o} }",
+            "forcedBindings":{}
+        },
     	"removeCriteriaOutput" : {
     		"sparql" : "DELETE {   GRAPH criteria:forecast {     ?observation rdf:type sosa:Observation ;       sosa:resultTime ?time;       sosa:hasResult ?result;       ?p ?o .     ?result rdf:type qudt:QuantityValue ;       rdf:type sosa:Result;       ?p1 ?o1   } }WHERE{   GRAPH criteria:forecast {     ?observation rdf:type sosa:Observation ;                  sosa:resultTime ?time;                  sosa:hasResult ?result;                  ?p ?o .     ?result rdf:type qudt:QuantityValue ;             rdf:type sosa:Result;             ?p1 ?o1   }filter(?time >= ?startDate)  } "
 		},

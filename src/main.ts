@@ -13,12 +13,15 @@ import { CronJob } from "cron";
 import { calculateSMYesterday } from "./model/spawnUtils/neutronCount2SoilMoisture";
 
 import { Producer,Consumer } from "pacfactory";
-const jsap= require("../resources/play.jsap.json");
+//const jsap= require("../resources/play.jsap.json");
+const jsap=require("../resources/criteria.jsap.json")
 import PlantsConsumer from "./pac/consumers/PlantsConsumer";
 import GraphCleaner from "./pac/producers/GraphCleaner";
 import WeedsConsumer from "./pac/consumers/WeedsConsumer";
 import WeedsGraphCleaner from "./pac/producers/WeedsGraphCleaner";
 import AlarmConsumer from "./pac/consumers/AlarmConsumer";
+import SensorConsumer from "./pac/consumers/SensorConsumer";
+import SensorGraphCleaner from "./pac/producers/SensorGraphCleaner";
 const log= require("greglogs").default; 
 log.setLogLevel(4); //per più info metti a 0
 
@@ -59,6 +62,94 @@ consumer.on("addedResults",()=>{
 consumer.subscribeToSepa()
  
     */
+
+
+//TODO: PRODUCER CON I DATI DEL MODELLO
+/*
+1. Creare producer e consumer partendo dal nuovo jsap
+    - consumer: GET_SENSOR_DATA
+    - producer: uploadCriteriaSensorData
+    - producer (cleaner): cleanSensorData
+
+    sensorDataProducer.updateSepa({
+        date: "2021-10-15T03:03:00Z",
+        ...
+        value: "30"
+    })
+
+2. Prova a produrre e consumare un dato fake impostato da te
+    STEPS
+    # Subscription
+    - clean
+    - subscribe (definire onAddedResults + subscribeToSepa)
+    - produce
+    # Query
+    - clean
+    - produce
+    - query
+
+3. Al posto del dato fake del produttore mettici l'output del modello
+
+    const SMmean = await calculateSMYesterday(csvOut);
+
+    sensorDataProducer.updateSepa({
+        date: "2021-10-15T03:03:00Z",
+        ...
+        value: SMean
+    })
+ */
+
+
+main()
+
+async function main(){
+    const sensorConsumer = new SensorConsumer(jsap);
+    const sensorGraphCleaner = new SensorGraphCleaner(jsap);
+    const sensorProducer = new Producer(jsap,"uploadCriteriaSensorData")
+    
+
+    await sensorGraphCleaner.cleanSensorData();
+
+    sensorProducer.updateSepa({
+        date:"2021-10-15T03:03:00Z",
+        value: "38.5",
+        portNumber:  "1",
+        layerNumber: "15",
+        sensorId:"2183891ui"
+    })
+
+    await wait(1000)
+
+    let queryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
+    console.log("QueryResult:",queryResult) 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+async function wait(ms:number){
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+    })
+}
+
+
+
+
+
+
+
+
+
+
 /*
 main()
 async function main(){ 
@@ -118,13 +209,11 @@ async function main(){
 }
 
 
-async function wait(ms:number){
-    return new Promise(resolve=>{
-        setTimeout(resolve,ms)
-    })
-}
+
 */
 
+
+/*
 interface Plant{
     s:string;
     varietyName:string;
@@ -156,7 +245,7 @@ function onNewWeed(plant:Plant){
 
      //console.log("thc %: " + plant.thcLevel)
 }
-
+*/
 
 
 
@@ -176,7 +265,7 @@ for(const element of array){
 }
 */
 
-
+/*
 main()
 async function main(){ 
 
@@ -187,7 +276,7 @@ async function main(){
     const alarmConsumer = new AlarmConsumer(jsap);
     
     //plantsConsumer.log.logLevel=3;
-
+ 
     //PULISCI GRAFO 
     await graphCleaner.cleanWeeds();
 
@@ -202,7 +291,7 @@ async function main(){
         }
     }) 
     alarmConsumer.subscribeToSepa()
-
+   
     //QUERY (dovrebbe essere vuota)
     console.log("Graph cleaned")
     let queryResult= await weedsConsumer.querySepa();
@@ -262,7 +351,7 @@ async function main(){
     }
 
 
-
+*/
 
 
 
