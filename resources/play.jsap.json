@@ -80,10 +80,40 @@
         },
         "getWeedsNameAndThcAndEffect":{
             "sparql":"SELECT * WHERE { graph agri:Weeds {?s rdf:type agri:Weeds . ?s agri:varietyName ?varietyName . ?s agri:hasProperties ?s2 . ?s2 agri:thc ?thcLevel . ?s2 agri:effect ?effect . }}"
+        },
+        "getAlarm":{
+            "sparql":"SELECT * WHERE { graph agri:Weeds {?s rdf:type agri:alarm . ?s agri:alarmText ?text . }}"
         }
+            
     },
     
     "updates": {
+        "sendAlarm":{
+            "sparql":"INSERT DATA { graph agri:Weeds { _:b rdf:type agri:alarm . _:b agri:alarmText ?text . } }",
+            "forcedBindings":{
+                "text":{
+                    "type":"literal"
+                }
+            }
+        },
+        "addWeedVariety": {
+            "sparql": "INSERT DATA { graph agri:Weeds { _:b rdf:type agri:Weeds . _:b agri:varietyName ?weedName . _:b agri:hasProperties _:b2 . _:b2 agri:thc ?thcLevel . _:b2 agri:effect ?weedEffect . }}",
+            "forcedBindings":{
+                "weedName":{
+                    "type":"literal"
+                },
+                "thcLevel":{
+                    "type":"literal"
+                },
+                "weedEffect":{
+                    "type":"literal"
+                }
+            }
+        },
+        "exampleMultipleAddWeedVariety": {
+            "sparql": "INSERT DATA { graph agri:Weeds { _:b rdf:type agri:Weeds . _:b agri:varietyName 'KalifaKush' . _:b agri:hasProperties _:b2 . _:b2 agri:thc '40'. _:b2 agri:effect 'sativa' . _:b3 rdf:type agri:Weeds . _:b3 agri:varietyName 'NorthernLights' . _:b3 agri:hasProperties _:b4 . _:b4 agri:thc '45'. _:b4 agri:effect 'indica' . }}",
+            "forcedBindings":{}
+        },
         "deleteGraphContent":{
             "sparql":"DELETE { GRAPH ?graph {?s ?p ?o} } WHERE { GRAPH ?graph {?s ?p ?o}}",
             "forcedBindings":{
@@ -116,20 +146,6 @@
                     "type": "literal"
                 },
                 "plantColor":{
-                    "type":"literal"
-                }
-            }
-        },
-        "addWeedVariety": {
-            "sparql": "INSERT DATA { graph agri:Weeds { _:b rdf:type agri:Plants . _:b agri:varietyName ?weedName . _:b agri:hasProperties _:b2 . _:b2 agri:thc ?thcLevel . _:b2 agri:effect ?weedEffect . }}",
-            "forcedBindings":{
-                "weedName":{
-                    "type":"literal"
-                },
-                "thcLevel":{
-                    "type":"literal"
-                },
-                "weedEffect":{
                     "type":"literal"
                 }
             }

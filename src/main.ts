@@ -18,6 +18,7 @@ import PlantsConsumer from "./pac/consumers/PlantsConsumer";
 import GraphCleaner from "./pac/producers/GraphCleaner";
 import WeedsConsumer from "./pac/consumers/WeedsConsumer";
 import WeedsGraphCleaner from "./pac/producers/WeedsGraphCleaner";
+import AlarmConsumer from "./pac/consumers/AlarmConsumer";
 const log= require("greglogs").default; 
 log.setLogLevel(4); //per più info metti a 0
 
@@ -124,7 +125,56 @@ async function wait(ms:number){
 }
 */
 
+interface Plant{
+    s:string;
+    varietyName:string;
+    s2:string;
+    thcLevel:string;
+    effect:string;
+}
 
+function onNewWeed(plant:Plant){
+    console.log("Ho aggiunto una pianta!:",plant)
+    const thcLevel= parseFloat(plant.thcLevel);
+    const alarmProducer = new Producer (jsap,"sendAlarm")
+
+    if (thcLevel<20){
+        const text= "Not good, block the production, we need more."
+        console.log("Sending alarm:",text)
+        alarmProducer.updateSepa({
+            text:text
+        })   
+    }else{
+        if(thcLevel>40){
+            const text="This weed is fire"
+            console.log("Sending alarm:",text)
+            alarmProducer.updateSepa({
+                text:text
+            })
+        }
+    }
+
+     //console.log("thc %: " + plant.thcLevel)
+}
+
+
+
+
+/*
+const array=["greg","francesco","marco"]
+
+//MODO 1
+for(var i=0;i<array.length;i++){
+    const element=array[i]
+
+    console.log("Curr index: "+i+", curr value: "+element)
+}
+
+//MODO 2
+for(const element of array){
+    console.log("Curr value: "+element)
+}
+*/
 
 
 main()
@@ -133,10 +183,25 @@ async function main(){
     const weedsConsumer = new WeedsConsumer(jsap);
     const graphCleaner = new WeedsGraphCleaner(jsap);
     const weedsProducer = new Producer(jsap,"addWeedVariety")
+    const multipleWeedsProducer = new Producer(jsap,"exampleMultipleAddWeedVariety")
+    const alarmConsumer = new AlarmConsumer(jsap);
+    
     //plantsConsumer.log.logLevel=3;
 
     //PULISCI GRAFO 
     await graphCleaner.cleanWeeds();
+
+    alarmConsumer.on("firstResults",(not:any)=>{
+        //console.log(not)
+    })
+    alarmConsumer.on("addedResults",(not:any)=>{
+        const bindings=not.getBindings()
+        //console.log("[CONSUMER] Ho ricevuto una notifica! (" + bindings.length + " elements)",)
+        for(const element of bindings){
+            console.log(element.text)
+        }
+    }) 
+    alarmConsumer.subscribeToSepa()
 
     //QUERY (dovrebbe essere vuota)
     console.log("Graph cleaned")
@@ -144,39 +209,46 @@ async function main(){
     console.log("QueryResult:",queryResult)  
 
     
-
+    
     weedsConsumer.on("firstResults",(not:any)=>{
         //console.log(not)
     })
     weedsConsumer.on("addedResults",(not:any)=>{
         const bindings=not.getBindings()
-        console.log("Ho aggiunto una pianta!:",bindings)
+        //console.log("[CONSUMER] Ho ricevuto una notifica! (" + bindings.length + " elements)",)
+        for(const element of bindings){
+            onNewWeed(element)
+        }
     })
     weedsConsumer.on("removedResults",(not:any)=>{
         //console.log(not)
     })
 
     weedsConsumer.subscribeToSepa()
+    
 
-
-    await wait(5000);
+    await wait(2000);
 
     //UPDATE
     const weeds=["Amnesia","Blueberry","BigBuddaCheese"]
     const thc=["23","20","18"]
     const effect=["sativa","indica","halfAndHalf"]
     for(var i=0;i<weeds.length;i++){
-        console.log("Sto inserendo:",weeds[i])
+        //console.log("[PRODUCER] Sto inserendo:",weeds[i])
         await weedsProducer.updateSepa({
             weedName:weeds[i],
             thcLevel:thc[i],
             weedEffect:effect[i]
         }); 
+        
         await wait(1000);
     }
-
-
-    //queryResult= await plantsConsumer.querySepa();
+    //console.log("Sto inserendo diverse piante")
+    await multipleWeedsProducer.updateSepa({})
+    
+    
+ 
+    //queryResult= await weedsConsumer.querySepa();
     //console.log("QueryResult:",queryResult) 
 
     }
