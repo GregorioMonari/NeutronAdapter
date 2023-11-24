@@ -100,9 +100,9 @@ consumer.subscribeToSepa()
  */
 
 
-main()
+/*main2()
 
-async function main(){
+async function main2(){
     const sensorConsumer = new SensorConsumer(jsap);
     const sensorGraphCleaner = new SensorGraphCleaner(jsap);
     const sensorProducer = new Producer(jsap,"uploadCriteriaSensorData")
@@ -111,26 +111,43 @@ async function main(){
     await sensorGraphCleaner.cleanSensorData();
 
     sensorProducer.updateSepa({
-        date:"2021-10-15T03:03:00Z",
+        date:"2021-10-15T03:03:00Z", 
         value: "38.5",
         portNumber:  "1",
         layerNumber: "15",
         sensorId:"2183891ui"
     })
+    
+
 
     await wait(1000)
 
     let queryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
     console.log("QueryResult:",queryResult) 
 
+    sensorConsumer.on("firstResults",(not:any)=>{
+        //console.log(not)
+    })
+    sensorConsumer.on("addedResults",(not:any)=>{
+        const bindings=not.getBindings()
+        console.log("Umidità media giornaliera di ieri:",bindings)
+    })
+    sensorConsumer.on("removedResults",(not:any)=>{
+        //console.log(not)
+    })
+    
+    sensorConsumer.subscribeToSepa()
+
+    await sensorProducer.updateSepa({
+        date:"2021-10-15T03:03:00Z", 
+        value: ,
+        portNumber:  "1",
+        layerNumber: "15",
+        sensorId:"2183891ui"
+
+    })
+    
 }
-
-
-
-
-
-
-
 
 
 
@@ -141,7 +158,7 @@ async function wait(ms:number){
     })
 }
 
-
+*/
 
 
 
@@ -412,7 +429,9 @@ async function main(){
 
 }
 
-/*main()
+*/
+main()
+
 
 
 async function main(){
@@ -435,6 +454,71 @@ async function main(){
     const SMmean = await calculateSMYesterday(csvOut);
 
     console.log("Soil Moisture Mean of the Previous Day: " + SMmean); 
-}
+
+        const sensorConsumer = new SensorConsumer(jsap);
+        const sensorGraphCleaner = new SensorGraphCleaner(jsap);
+        const sensorProducer = new Producer(jsap,"uploadCriteriaSensorData")
+        
+
+        await sensorGraphCleaner.cleanSensorData();
+
+        /*sensorProducer.updateSepa({
+            date:"2021-10-15T03:03:00Z", 
+            value: "38.5",
+            portNumber:  "1",
+            layerNumber: "15",
+            sensorId:"2183891ui"
+        })
+        */
+
+
+        await wait(1000)
+
+        let queryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
+        console.log("QueryResult:",queryResult) 
+
+        sensorConsumer.on("firstResults",(not:any)=>{
+            //console.log(not)
+        })
+        sensorConsumer.on("addedResults",(not:any)=>{
+            const bindings=not.getBindings()
+            console.log("Umidità media giornaliera di ieri:",bindings)
+        })
+        sensorConsumer.on("removedResults",(not:any)=>{
+            //console.log(not)
+        })
+        
+        sensorConsumer.subscribeToSepa()
+
+        await wait(2000)
+
+        await sensorProducer.updateSepa({
+            date:"2021-10-15T03:03:00Z", 
+            value: SMmean,
+            portNumber:  "1",
+            layerNumber: "15",
+            sensorId:"2183891ui"
+
+        })
+        
+        await wait(2000)
+        let realQueryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
+        console.log("QueryResult:",queryResult) 
+    }
+
+
+
+
+
+
+
+
+
+
+
+    async function wait(ms:number){
+        return new Promise(resolve=>{
+            setTimeout(resolve,ms)
+        })
+    }
     // Access the CSV data property from the object
-*/
