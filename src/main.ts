@@ -22,8 +22,9 @@ import WeedsGraphCleaner from "./pac/producers/WeedsGraphCleaner";
 import AlarmConsumer from "./pac/consumers/AlarmConsumer";
 import SensorConsumer from "./pac/consumers/SensorConsumer";
 import SensorGraphCleaner from "./pac/producers/SensorGraphCleaner";
+import NeutronAdapter from "./app/NeutronAdapter";
 const log= require("greglogs").default; 
-log.setLogLevel(4); //per più info metti a 0
+log.setLogLevel(2); //per più info metti a 0
 
 //console.log(jsap)
 /**
@@ -432,8 +433,46 @@ async function main(){
 */
 main()
 
+async function main(){
+
+    /*
+        *ULTIMI STEP DELLA PARTE IMPLEMENTATIVA
+        TODO: main
+        - dentro la funzione addJob() di CronScheduler, nella sezione dove c'è scritto ADD MISSING CODE,
+          aggiungi la parte del modello 
+        TODO: facoltativo
+        - crea uno units producer per simulare la generazione di units
+        - devi chiamare adapter.start() se vuoi iscriverti alle unit
+        - usa il sensorDataConsumer per consumare i dati del sensore che stai producendo
+    */
+
+    /*
+       *PRESENTAZIONE DEL PRODOTTO: come presento il risultato del mio lavoro? dashboard con una settimana di raccolta dati o mappa
+       !NEXT TIME: 
+       !IMPORTANTE: - scrivere un piccolo diagramma di flusso per spiegare a Luca e Baroni cosa abbiamo fatto nel dettaglio
+       - considera la possibilità di plottare i dati con grafana
+       - validity check (ovvero che date, id etc.. siano impostati correttamente)
+       - pulizia/scrittura pezzettini mancanti codice
+       - scrivere due test base per avere un prodotto finito robusto
+    */
+   
+
+    console.log("### Starting MAIN ###")
+    console.log("** Creating new Neutron adapter")
+    const adapter= new NeutronAdapter(jsap);
+    console.log("** Start Neutron adapter")
+    //adapter.start()
+    await adapter.test()
+    //Cron job attivi?
+    console.log("Active cron jobs:",adapter.getActiveJobs().length) 
+}
 
 
+
+
+
+
+/*
 async function main(){
     const jclient= new NmDbClient();
     const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
@@ -455,6 +494,7 @@ async function main(){
 
     console.log("Soil Moisture Mean of the Previous Day: " + SMmean); 
 
+
         const sensorConsumer = new SensorConsumer(jsap);
         const sensorGraphCleaner = new SensorGraphCleaner(jsap);
         const sensorProducer = new Producer(jsap,"uploadCriteriaSensorData")
@@ -462,14 +502,14 @@ async function main(){
 
         await sensorGraphCleaner.cleanSensorData();
 
-        /*sensorProducer.updateSepa({
-            date:"2021-10-15T03:03:00Z", 
-            value: "38.5",
-            portNumber:  "1",
-            layerNumber: "15",
-            sensorId:"2183891ui"
-        })
-        */
+        //sensorProducer.updateSepa({
+        //    date:"2021-10-15T03:03:00Z", 
+        //    value: "38.5",
+        //    portNumber:  "1",
+        //    layerNumber: "15",
+        //    sensorId:"2183891ui"
+        //})
+        
 
 
         await wait(1000)
@@ -498,14 +538,13 @@ async function main(){
             portNumber:  "1",
             layerNumber: "15",
             sensorId:"2183891ui"
-
         })
         
         await wait(2000)
         let realQueryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
         console.log("QueryResult:",queryResult) 
     }
-
+*/
 
 
 
@@ -521,4 +560,5 @@ async function main(){
             setTimeout(resolve,ms)
         })
     }
+
     // Access the CSV data property from the object
