@@ -15,12 +15,12 @@ export default class CronScheduler{
         this.activeJobs=[];
     }
 
-    public async addJob(unit:UnitBinding){
+    public async addJob(foi:string,sensorId:string,time:string){
         //qui metto le proprietà della unit che ci interessano
-        const unitId=unit.id;
-        const sensorId=unit.sensorId;
-        const time=unit.time;
-        log.info("Adding cron job for unit:",unitId,"|| sensorId:",sensorId,"|| time:",time)
+        //const unitId=unit.id;
+        //const sensorId=unit.sensorId;
+
+        log.info("Adding cron job for featureOfInterest:",foi,"|| sensorId:",sensorId,"|| time:",time)
         
         //*Get schedule time
         const minute=time.split(":")[1]
@@ -29,7 +29,7 @@ export default class CronScheduler{
         //*Create cron job
         const job= new CronJob(minute+' '+hour+' * * *',async function(){
             const startTime=performance.now()
-            log.info("Executing job for unit:",unitId)
+            log.info("Executing job for featureOfInterest:",foi)
             
             //TODO: ADD MISSING CODE!
             //1. Api call
@@ -39,7 +39,7 @@ export default class CronScheduler{
             
             
             const stopTime=performance.now()
-            log.info("Completed cron job for unit:",unitId," | execution time: "+(stopTime-startTime)+"ms")
+            log.info("Completed cron job for featureOfInterest:",foi," | execution time: "+(stopTime-startTime)+"ms")
         },null,false,"UTC")
         job.start(); 
         this.activeJobs.push(job)

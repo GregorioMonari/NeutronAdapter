@@ -462,7 +462,7 @@ async function main(){
     const adapter= new NeutronAdapter(jsap);
     console.log("** Start Neutron adapter")
     //adapter.start()
-    await adapter.test()
+    await adapter.start()
     //Cron job attivi?
     console.log("Active cron jobs:",adapter.getActiveJobs().length) 
 }

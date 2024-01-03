@@ -1,19 +1,14 @@
-import * as fs from 'fs'
 const log = require("greglogs").default
 
-//import AgrifirmIrriwatchClient from "../client/AgrifirmIrriwatchClient";
-import UnitsConsumer from "../pac/consumers/UnitsConsumer";
 import CronScheduler from "./CronScheduler";
-//import { getFieldValuesFromZip, getJsapExtendedOutputsMap, mapFieldValues2Bindings } from "./dataProcessing";
-import { UnitBinding } from '../types/unit-interface';
-//import IrriWatchApiClient from '../client/IrriWatchApiClient';
 
 export default class NeutronAdapter {
-    private unitsConsumer:UnitsConsumer;
+    //private unitsConsumer:UnitsConsumer;
     private cronManager:CronScheduler;
 
 
     constructor(jsap:any){
+        /*
         this.unitsConsumer= new UnitsConsumer(jsap);
         this.unitsConsumer.getEmitter().on("firstResults",(not:any)=>{
             const results= not.getBindings();
@@ -30,18 +25,45 @@ export default class NeutronAdapter {
                 console.log(e)
             })
         })
+        */
         this.cronManager= new CronScheduler(jsap);
     }
 
-    async start(){
+    //Start the application
+    public async start(){
+
+        //1. CREATE FOI
+        //2. Start cron jobs
+        var foi="testFoi";
+        var sensorId="testSensorId";
+        var time="12:51";
+        await this.cronManager.addJob(foi,sensorId,time);
+
+    }
+    
+    //Stops the application
+    public stop(){}
+
+    //Get all currently running cron jobs
+    public getActiveJobs(){
+        return this.cronManager.getActiveJobs()
+    }
+
+
+
+
+
+
+    //!------OUTDATED------------------------------------------------------------------------------
+    /*
+    async start_OLD(){
         this.unitsConsumer.subscribeToSepa();
         //this.testSchedule()
     }
-    async stop(){
+    async stop_OLD(){
         this.unitsConsumer.stop();
         this.cronManager.stopAllJobs();
     }
-
     //ADD CRON JOBS TO SCHEDULE
     private async onAddedUnit(not:any){
         //console.log(not)     
@@ -55,15 +77,8 @@ export default class NeutronAdapter {
             }
         }
     }
-    //remove unit from SCHEDULE
-    async onRemovedUnit(not:any){}
-
-    public getActiveJobs(){
-        return this.cronManager.getActiveJobs()
-    }
-
     private isUnitValid(binding: unknown) {
-        /*if (binding == null) return false;
+        if (binding == null) return false;
         if (typeof binding !== 'object') return false;
     
         if (!binding.hasOwnProperty("id")) return false;
@@ -84,12 +99,12 @@ export default class NeutronAdapter {
             return false
         }
         if(bd.sensorType!="SATELLITE") return false
-        */
+        
         return true; 
     }
-
-    //TEST
-    async test(){
+    //remove unit from SCHEDULE
+    async onRemovedUnit(not:any){}
+    async testWithUnits_OUTDATED(){
         this.onAddedUnit([
             {
                 id:"vaimee:Imola",
@@ -116,7 +131,7 @@ export default class NeutronAdapter {
                 sensorId:"JUNG.67" 
             }
             
-            /*,
+            ,
             {
                 time:"11:30",
                 id:"vaimee:Chile2",
@@ -134,7 +149,8 @@ export default class NeutronAdapter {
                 id:"vaimee:Schoonoord",
                 sensorType:"SATELLITE",
                 sensorId:"815a6081-36b3-4245-aaad-a9bc8230e966"
-            }*/
+            }
         ])
     }
+    */
 }
