@@ -1,16 +1,13 @@
-ciao
-
-
 # NeutronAdapter
-A semantic client to consume and publish neutron relevations data on a SEPA database
-By Greg and Franceso
+A semantic application that extracts soil moisture from neutron data provided by CNRS sensors.
+
 
 # How to use
 ## Prerequisites
 - node
 - tsc
 
-## How to use
+## Run the application
 1. Download the required packages
 ```
 npm i
