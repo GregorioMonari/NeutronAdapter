@@ -4,13 +4,19 @@ const log = require("greglogs").default
 
 import { UnitBinding } from '../types/unit-interface';
 import SensorDataProducer from "../pac/producers/SensorDataProducer";
+import NmDbClient from "../client/NmdbClient";
+import FinAppClient from "../client/FinAppClient";
+import neutronCount2SoilMoisture, { calculateSMYesterday } from "../model/spawnUtils/neutronCount2SoilMoisture";
+import SensorConsumer from "../pac/consumers/SensorConsumer";
+import SensorGraphCleaner from "../pac/producers/SensorGraphCleaner";
+import { Producer } from "pacfactory/build/core/Pattern/Producer";
 
 
 export default class CronScheduler{
     private activeJobs:CronJob[];
     private jsap:any;
     
-    constructor(_jsap:any){
+    constructor(_jsap:any){ 
         this.jsap=_jsap;
         this.activeJobs=[];
     }
@@ -37,6 +43,79 @@ export default class CronScheduler{
                 3. Con i dati in output del modello abbiamo fatto calculate mean
             */
             //Qui in output dovrebbe venire var soilMoisture=10.15
+            async function main(){
+                const jclient= new NmDbClient();
+                const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
+                const today = new Date();
+                const isoDate = today.toISOString().split('T')[0];
+                console.log("** FETCHING DATA FROM API")
+                //TODO: CHE DATA METTO IN JUNG?
+                const jungData= await jclient.getRawData("JUNG","2023-04-01",isoDate);
+                console.log("Received",jungData.length,"Bytes from Jung") 
+                const finappData= await fclient.getRawFinappData(67); 
+                console.log("Received",finappData.length,"Bytes from Finapp")
+            
+                
+                const csvOut= await neutronCount2SoilMoisture(jungData,finappData)
+                //console.log("Output:",modelOutput.length)
+            
+            
+                const SMmean = await calculateSMYesterday(csvOut);
+            
+                console.log("Soil Moisture Mean of the Previous Day: " + SMmean); 
+            } }  )}} /* 
+            
+            
+                    const sensorConsumer = new SensorConsumer(jsap);
+                    const sensorGraphCleaner = new SensorGraphCleaner(jsap);
+                    const sensorProducer = new Producer(jsap,"uploadCriteriaSensorData")
+                    
+            
+                    await sensorGraphCleaner.cleanSensorData();
+            
+                    //sensorProducer.updateSepa({
+                    //    date:"2021-10-15T03:03:00Z", 
+                    //    value: "38.5",
+                    //    portNumber:  "1",
+                    //    layerNumber: "15",
+                    //    sensorId:"2183891ui"
+                    //})
+                    
+            
+            
+                    await wait(1000)
+            
+                    let queryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
+                    console.log("QueryResult:",queryResult) 
+            
+                    sensorConsumer.on("firstResults",(not:any)=>{
+                        //console.log(not)
+                    })
+                    sensorConsumer.on("addedResults",(not:any)=>{
+                        const bindings=not.getBindings()
+                        console.log("Umidità media giornaliera di ieri:",bindings)
+                    })
+                    sensorConsumer.on("removedResults",(not:any)=>{
+                        //console.log(not)
+                    })
+                    
+                    sensorConsumer.subscribeToSepa()
+            
+                    await wait(2000)
+            
+                    await sensorProducer.updateSepa({
+                        date:"2021-10-15T03:03:00Z", 
+                        value: SMmean,
+                        portNumber:  "1",
+                        layerNumber: "15",
+                        sensorId:"2183891ui"
+                    })
+                    
+                    await wait(2000)
+                    let realQueryResult= await sensorConsumer.querySepa(); //lo useremo per testare l'app
+                    console.log("QueryResult:",queryResult) 
+                }
+            
 
             //TODO: Quando hai finito parte precedente gestiamo FOI + sepa update
             //4. Update sensor data to sepa with producer (with the right date)
@@ -141,4 +220,4 @@ async function main(){
     }
 
 
-*/
+*/ 
