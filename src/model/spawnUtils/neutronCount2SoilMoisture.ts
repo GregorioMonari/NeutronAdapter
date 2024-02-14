@@ -54,6 +54,18 @@ export async function calculateSMYesterday(csvOut: ModelOutput) {
 
 //!BUG: AL PRIMO AVVIO SE NON C'E' LA CARTELLA INIZIALE CRASHA
 export default async function neutronCount2SoilMoisture(jungData:any,finappData:any):Promise<ModelOutput>{
+    
+    const directoryPath="./src/model/dataIO"
+
+    //CHECK IF dataIO exists
+    if (!fs.existsSync(directoryPath)) {
+        fs.mkdirSync(directoryPath, { recursive: true });
+        console.log(`Directory '${directoryPath}' created successfully.`);
+    } else {
+        console.log(`Directory '${directoryPath}' already exists.`);
+    }
+    
+    
     //TODO: settare nome file con la data
     let outStringData="";
     const date= new Date()

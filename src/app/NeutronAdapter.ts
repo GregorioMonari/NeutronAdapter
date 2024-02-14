@@ -22,10 +22,10 @@ export default class NeutronAdapter {
         var long=""
         //* CI PENSIAMO LA VOLTA PROSSIMA
         //* comunque qui dovremo creare il PLACE di IMOLA
-        
+         
         //2. START IMOLA CRON JOB
         //place: id, name, lat, long
-        var time="13:08"; 
+        var time="15:44"; 
         await this.cronManager.addJob(place,time);
         
     }
@@ -36,6 +36,6 @@ export default class NeutronAdapter {
 
     //Get all currently running cron jobs
     public getActiveJobs(){
-        return this.cronManager.getActiveJobs()
+        //return this.cronManager.getActiveJobs()
     }
 } 
