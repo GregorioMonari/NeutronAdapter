@@ -5,10 +5,11 @@ import CronScheduler from "./CronScheduler";
 export default class NeutronAdapter {
     //private unitsConsumer:UnitsConsumer;
     private cronManager:CronScheduler;
-
+    private jsap:any;
 
     constructor(jsap:any){
         this.cronManager= new CronScheduler(jsap);
+        this.jsap=jsap;
     }
 
     //Start the application
@@ -20,8 +21,11 @@ export default class NeutronAdapter {
         var name="ImolaStation"
         var lat=""
         var long=""
-        //* CI PENSIAMO LA VOLTA PROSSIMA
-        //* comunque qui dovremo creare il PLACE di IMOLA
+        //TODO: Crea il producer partendo dalla query ADD_OBSERVATION
+        /*const PlaceProducer = new PlaceProducer(this.jsap)
+        PlaceProducer.updateSepa({
+            ...
+        })*/
          
         //2. START IMOLA CRON JOB
         //place: id, name, lat, long

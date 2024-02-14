@@ -28,6 +28,9 @@ export default class CronScheduler{
         //Get schedule time
         const minute=time.split(":")[1]
         const hour=time.split(":")[0]
+        
+        //Get jsap
+        const jsap=this.jsap;
 
         //Cron job configuration
         const cronPattern= minute+' '+hour+' * * *'; //start time of job
@@ -35,7 +38,7 @@ export default class CronScheduler{
             //const startTime=performance.now()
             log.info("Executing job for featureOfInterest:",foi)
 
-            //1. GET DATA
+            //1. DOWLOAD DATA
             console.log("** Fetching data from Api")
             const jclient= new NmDbClient();
             const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
@@ -57,6 +60,18 @@ export default class CronScheduler{
         
 
             console.log("- Soil Moisture Mean of the Previous Day: " + SMmean); 
+
+            //4. UPLOAD DATA
+            //TODO: Crea il producer partendo dalla query ADD_OBSERVATION
+            /*const soilMoistureProducer = new SoilMoistureProducer(jsap)
+            soilMoistureProducer.updateSepa({
+                feature: "crns:ImolaTest_1",
+                property: "criteriaProperty:SoilWaterContent15"
+                time: "16:31"
+                unit: "unit:Number"
+                value: SMean
+            })*/
+
             
         }
 

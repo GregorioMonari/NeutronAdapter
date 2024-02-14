@@ -1,0 +1,285 @@
+{
+    "host": "dld.arces.unibo.it",
+    "oauth": {
+        "enable": false,
+        "register": "https://localhost:8443/oauth/register",
+        "tokenRequest": "https://localhost:8443/oauth/token"
+    },
+    "sparql11protocol": {
+        "protocol": "http",
+        "port": 8668,
+        "query": {
+            "path": "/query",
+            "method": "POST",
+            "format": "JSON"
+        },
+        "update": {
+            "path": "/update",
+            "method": "POST",
+            "format": "JSON"
+        }
+    },
+    "sparql11seprotocol": {
+        "reconnect": true,
+        "protocol": "ws",
+        "availableProtocols": {
+            "ws": {
+                "port": 9668,
+                "path": "/subscribe"
+            },
+            "wss": {
+                "port": 443,
+                "path": "/subscribe"
+            }
+        }
+    },
+    "graphs": {
+        
+    },
+    "namespaces": {
+		"schema": "http://schema.org/",
+		"qudt": "http://qudt.org/schema/qudt#",
+		"arces-monitor": "http://wot.arces.unibo.it/monitor#",
+		"owl": "http://www.w3.org/2002/07/owl#",
+		"gn": "http://www.geonames.org/ontology#",
+		"xsd": "http://www.w3.org/2001/XMLSchema#",
+		"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+		"swamp": "http://swamp-project.org/ns#",
+		"unit": "http://qudt.org/vocab/unit#",
+		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+		"mqtt": "http://wot.arces.unibo.it/mqtt#",
+		"wgs84_pos": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+		"time": "http://www.w3.org/2006/time#",
+		"sosa": "http://www.w3.org/ns/sosa/",
+		"weather": "https://vaimee.com/weather/",
+		"criteria": "https://vaimee.com/criteria/",
+		"criteriaProperty": "https://vaimee.com/criteria/property#",
+		"vaimee": "https://vaimee.com#",
+		"vaimeeSensor": "https://vaimee.com/sensors#",
+        "crns": "https://vaimee.com/crns#"
+    },
+    "extended": {
+
+        "criteriaProperties": {
+            "IRRIGATION": {
+                "property": "criteriaProperty:IrrigationNeeds",
+                "unit": "unit:Millimeter"
+            },
+            "LAI": {
+                "property": "criteriaProperty:LeafAreaIndex",
+                "unit": "unit:Number"
+            },
+            "PREC": {
+                "property": "criteriaProperty:Precipitation",
+                "unit": "unit:Millimeter"
+            },
+            "WATER_CONTENT": {
+                "property": "criteriaProperty:WaterContent",
+                "unit": "unit:Millimeter"
+            },
+            "SURFACE_WC": {
+                "property": "criteriaProperty:SurfaceWaterContent",
+                "unit": "unit:Millimeter"
+            },
+            "AVAILABLE_WATER": {
+                "property": "criteriaProperty:AvailableWater",
+                "unit": "unit:Millimeter"
+            },
+            "READILY_AW": {
+                "property": "criteriaProperty:ReadilyAvailableWater",
+                "unit": "unit:Millimeter"
+            },
+            "FRACTION_AW": {
+                "property": "criteriaProperty:FractionAvailableWater",
+                "unit": "unit:Millimeter"
+            },
+            "DRAINAGE": {
+                "property": "criteriaProperty:Drainage",
+                "unit": "unit:Millimeter"
+            },
+            "RUNOFF": {
+                "property": "criteriaProperty:Runoff",
+                "unit": "unit:Millimeter"
+            },
+            "ET0": {
+                "property": "criteriaProperty:Et0",
+                "unit": "unit:Millimeter"
+            },
+            "TRANSP_MAX": {
+                "property": "criteriaProperty:TranspirationMax",
+                "unit": "unit:Millimeter"
+            },
+            "TRANSP": {
+                "property": "criteriaProperty:Transpiration",
+                "unit": "unit:Millimeter"
+            },
+            "EVAP_MAX": {
+                "property": "criteriaProperty:EvaporationMax",
+                "unit": "unit:Millimeter"
+            },
+            "EVAP": {
+                "property": "criteriaProperty:Evaporation",
+                "unit": "unit:Millimeter"
+            },
+            "ROOT_DEPTH": {
+                "property": "criteriaProperty:RootDepth",
+                "unit": "unit:Meter"
+            },
+            "SWC_15": {
+                "property": "criteriaProperty:SoilWaterContent15",
+                "unit": "unit:Number"
+            },
+            "SWC_20": {
+                "property": "criteriaProperty:SoilWaterContent20",
+                "unit": "unit:Meter"
+            },
+            "SWC_23": {
+                "property": "criteriaProperty:SoilWaterContent23",
+                "unit": "unit:Meter"
+            },
+            "SWC_25": {
+                "property": "criteriaProperty:SoilWaterContent25",
+                "unit": "unit:Meter"
+            },
+            "SWC_30": {
+                "property": "criteriaProperty:SoilWaterContent30",
+                "unit": "unit:Meter"
+            },
+            "SWC_45": {
+                "property": "criteriaProperty:SoilWaterContent45",
+                "unit": "unit:Meter"
+            },
+            "SWC_50": {
+                "property": "criteriaProperty:SoilWaterContent50",
+                "unit": "unit:Meter"
+            },
+            "SWC_75": {
+                "property": "criteriaProperty:SoilWaterContent75",
+                "unit": "unit:Meter"
+            },
+            "WP_15": {
+                "property": "criteriaProperty:WaterPotential15",
+                "unit": "unit:Meter"
+            },
+            "WP_20": {
+                "property": "criteriaProperty:WaterPotential20",
+                "unit": "unit:Meter"
+            },
+            "WP_23": {
+                "property": "criteriaProperty:WaterPotential23",
+                "unit": "unit:Meter"
+            },
+            "WP_25": {
+                "property": "criteriaProperty:WaterPotential25",
+                "unit": "unit:Meter"
+            },
+            "WP_30": {
+                "property": "criteriaProperty:WaterPotential30",
+                "unit": "unit:Meter"
+            },
+            "WP_45": {
+                "property": "criteriaProperty:WaterPotential45",
+                "unit": "unit:Meter"
+            },
+            "WP_50": {
+                "property": "criteriaProperty:WaterPotential50",
+                "unit": "unit:Meter"
+            },
+            "WP_75": {
+                "property": "criteriaProperty:WaterPotential75",
+                "unit": "unit:Meter"
+            }
+        }
+
+    },
+    "queries": {
+
+        "getAllData": {
+            "sparql": "SELECT * WHERE { ?s ?p ?o }"
+        },
+
+        "GET_PLACES": {
+			"sparql": "SELECT * WHERE {GRAPH crns:Places {?id rdf:type schema:Place; schema:name ?name ;  schema:GeoCoordinates _:coordinate . _:coordinate schema:latitude ?lat ; schema:longitude ?lon}}"
+		},
+
+        "GET_OBSERVATIONS_OF_PLACE": {
+            "sparql": "SELECT * { GRAPH crns:Observations { _:observation rdf:type sosa:Observation ;  sosa:hasFeatureOfInterest ?feature ; sosa:observedProperty ?property; sosa:resultTime ?time; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit ?unit ; qudt:numericValue ?value}}",
+            "forcedBindings" :{
+                "feature": {
+                    "type": "uri",
+                    "value" : "vaimee:CrnsImola"
+                }
+            }
+        }
+
+            
+    },
+    
+    "updates": {
+        "ADD_PLACE": {
+			"sparql": "INSERT {GRAPH crns:Places {?id rdf:type schema:Place; schema:name ?name ;  schema:GeoCoordinates _:coordinate . _:coordinate schema:latitude ?lat ; schema:longitude ?lon}} WHERE {}",
+			"forcedBindings": {
+                "name": {
+					"type": "literal",
+					"value": "crns:Imola"
+				},
+				"id": {
+					"type": "uri",
+					"value": "crns:Imola"
+				},
+				"lat": {
+					"type": "literal",
+					"value": "44.489664",
+					"datatype": "xsd:decimal"
+				},
+				"lon": {
+					"type": "literal",
+					"value": "11.357023",
+					"datatype": "xsd:decimal"
+				}
+			}
+		},
+
+        "REMOVE_PLACE": {
+            "sparql": "DELETE { GRAPH crns:Places { ?id rdf:type schema:Place; ?p ?o } } WHERE { GRAPH crns:Places { ?id rdf:type schema:Place; ?p ?o } }",
+			"forcedBindings": {
+				"id": {
+					"type": "uri",
+					"value": "crns:Imola"
+				}
+            }
+        },
+
+        "ADD_OBSERVATION": {
+            "sparql": "INSERT DATA { GRAPH crns:Observations { _:observation rdf:type sosa:Observation ;  sosa:hasFeatureOfInterest ?feature ; sosa:observedProperty ?property; sosa:resultTime ?time; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit ?unit ; qudt:numericValue ?value}}",
+            "forcedBindings": {
+                "feature": {
+                    "type": "uri",
+                    "value" : "vaimee:CrnsImola"
+                },
+                "property": {
+                    "type": "uri",
+                    "value" : "criteria:Property"
+                },
+                "time": {
+                    "type": "literal",
+                    "datatype": "xsd:DateTime",
+                    "value" : "2021-10-13"
+                },
+                "unit": {
+                    "type": "uri",
+                    "value": "unit:DegreeCelsius"
+                },
+                "value": {
+                    "type": "literal",
+                    "datatype": "xsd:decimal",
+                    "value": 123.45
+                }
+            }
+        },
+
+        "CLEAN_OBSERVATIONS_GRAPH": {
+            "sparql": "DELETE {GRAPH crns:Observations{?s ?p ?o} } WHERE {GRAPH crns:Observations{?s ?p ?o} }"
+        }
+    }
+}
