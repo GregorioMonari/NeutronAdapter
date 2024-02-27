@@ -88,7 +88,7 @@
             "READILY_AW": {
                 "property": "criteriaProperty:ReadilyAvailableWater",
                 "unit": "unit:Millimeter"
-            },
+            }, 
             "FRACTION_AW": {
                 "property": "criteriaProperty:FractionAvailableWater",
                 "unit": "unit:Millimeter"
@@ -199,20 +199,34 @@
         },
 
         "GET_PLACES": {
-			"sparql": "SELECT * WHERE {GRAPH crns:Places {?id rdf:type schema:Place; schema:name ?name ;  schema:GeoCoordinates _:coordinate . _:coordinate schema:latitude ?lat ; schema:longitude ?lon}}"
-		},
+			"sparql": "SELECT * WHERE {GRAPH crns:Places {?id rdf:type schema:Place; schema:name ?name ;  schema:GeoCoordinates _:coordinate . _:coordinate schema:latitude ?lat ; schema:longitude ?lon}}",
+            "forcedBindings" :{
+				"name": {
+					"type": "literal",
+					"value": "crns:Imola"
+				},
+                "id": {
+					"type": "uri",
+                    "value" : "vaimee:CrnsImola"
+                }
+		    }
+        },
 
         "GET_OBSERVATIONS_OF_PLACE": {
-            "sparql": "SELECT * { GRAPH crns:Observations { _:observation rdf:type sosa:Observation ;  sosa:hasFeatureOfInterest ?feature ; sosa:observedProperty ?property; sosa:resultTime ?time; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit ?unit ; qudt:numericValue ?value}}",
+            "sparql": "SELECT * { GRAPH crns:Observations { _:observation rdf:type sosa:Observation ;  sosa:hasFeatureOfInterest ?feature ; sosa:observedProperty ?property; sosa:resultTime ?time; sosa:phenomenonTime ?ptime; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit ?unit ; qudt:numericValue ?value}}",
             "forcedBindings" :{
                 "feature": {
                     "type": "uri",
                     "value" : "vaimee:CrnsImola"
+                },
+                "property": {
+                    "type": "uri",
+                    "value" : "criteria:Property"
                 }
             }
         }
 
-            
+             
     },
     
     "updates": {
@@ -229,12 +243,12 @@
 				},
 				"lat": {
 					"type": "literal",
-					"value": "44.489664",
+					"value": "44.384809",
 					"datatype": "xsd:decimal"
 				},
 				"lon": {
 					"type": "literal",
-					"value": "11.357023",
+					"value": "11.698777",
 					"datatype": "xsd:decimal"
 				}
 			}
@@ -251,7 +265,7 @@
         },
 
         "ADD_OBSERVATION": {
-            "sparql": "INSERT DATA { GRAPH crns:Observations { _:observation rdf:type sosa:Observation ;  sosa:hasFeatureOfInterest ?feature ; sosa:observedProperty ?property; sosa:resultTime ?time; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit ?unit ; qudt:numericValue ?value}}",
+            "sparql": "INSERT DATA { GRAPH crns:Observations { _:observation rdf:type sosa:Observation ;  sosa:hasFeatureOfInterest ?feature ; sosa:observedProperty ?property; sosa:resultTime ?time; sosa:phenomenonTime ?ptime ; sosa:hasResult _:result . _:result rdf:type qudt:QuantityValue ; rdf:type sosa:Result; sosa:isResultOf _:observation; qudt:unit ?unit ; qudt:numericValue ?value}}",
             "forcedBindings": {
                 "feature": {
                     "type": "uri",
@@ -265,6 +279,11 @@
                     "type": "literal",
                     "datatype": "xsd:DateTime",
                     "value" : "2021-10-13"
+                },
+                "ptime": {
+                    "type": "literal",
+                    "datatype": "xsd:DateTime",
+                    "value" : "2021-10-12"
                 },
                 "unit": {
                     "type": "uri",

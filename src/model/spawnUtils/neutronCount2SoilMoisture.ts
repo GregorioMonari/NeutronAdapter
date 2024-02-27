@@ -66,14 +66,14 @@ export default async function neutronCount2SoilMoisture(jungData:any,finappData:
     }
     
     
-    //TODO: settare nome file con la data
+    //Set name file with the date
     let outStringData="";
     const date= new Date()
     const stringDate= date.toISOString()
     const baseFileName="dataIO/test_2"
 
     try{
-        //*FEAT: scrivere jung data e finappData in baseFileName.in1.csv e baseFileName.in2.csv
+        //*FEAT: writing jung data and finappData in baseFileName.in1.csv and baseFileName.in2.csv
         fs.writeFileSync("./src/model/"+baseFileName+".in1.csv",jungData);
         fs.writeFileSync("./src/model/"+baseFileName+".in2.csv",finappData);
 
@@ -88,14 +88,14 @@ export default async function neutronCount2SoilMoisture(jungData:any,finappData:
         console.log(consoleOutput.err)
         console.log("---------<R model END>-----------")
 
-        //*FEAT: leggi output da baseFileName.out.csv
+        //*FEAT: read the output from baseFileName.out.csv
         outStringData= fs.readFileSync("./src/model/"+baseFileName+".out.csv").toString();
     }catch(e){
         console.log("! ERROR DURING MODEL EXECUTION")
         console.log(e)
     }
     
-    //TODO: REMOVE OLD FILES
+    //*FEAT: REMOVE OLD FILES
     fs.unlinkSync("./src/model/"+baseFileName+".in1.csv")
     fs.unlinkSync("./src/model/"+baseFileName+".in2.csv")
     fs.unlinkSync("./src/model/"+baseFileName+".out.csv")

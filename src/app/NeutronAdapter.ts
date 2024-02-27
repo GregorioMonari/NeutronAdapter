@@ -1,6 +1,8 @@
 const log = require("greglogs").default
 
+import PlaceProducer from "../pac/producers/PlaceProducer";
 import CronScheduler from "./CronScheduler";
+
 
 export default class NeutronAdapter {
     //private unitsConsumer:UnitsConsumer;
@@ -18,20 +20,27 @@ export default class NeutronAdapter {
 
         //1. CREATE FOI
         var place="vaimee:Imola";
-        var name="ImolaStation"
-        var lat=""
-        var long=""
-        //TODO: Crea il producer partendo dalla query ADD_OBSERVATION
-        /*const PlaceProducer = new PlaceProducer(this.jsap)
-        PlaceProducer.updateSepa({
-            ...
-        })*/
-         
+        var name="ImolaStation";
+        var lat="44.384809"; 
+        var long="11.698777";
+
+        const placeProducer = new PlaceProducer(this.jsap)
+        placeProducer.updateSepa({
+            name:name,        
+            id:place,      
+            lat:lat,          
+            long:long
+        
+        })
+        
+
         //2. START IMOLA CRON JOB
         //place: id, name, lat, long
-        var time="15:44"; 
+        var time="10:41"; 
         await this.cronManager.addJob(place,time);
         
+        
+
     }
     
     //-----------------------------UTLITIES--------------------------------------------------------------------
