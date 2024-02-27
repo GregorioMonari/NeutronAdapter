@@ -29,8 +29,7 @@ export default class NeutronAdapter {
             name:name,        
             id:place,      
             lat:lat,          
-            long:long
-        
+            lon:long        
         })
         
 
