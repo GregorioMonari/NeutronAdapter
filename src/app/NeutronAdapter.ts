@@ -35,7 +35,7 @@ export default class NeutronAdapter {
 
         //2. START IMOLA CRON JOB
         //place: id, name, lat, long
-        var time="10:41"; 
+        var time="11:09"; 
         await this.cronManager.addJob(place,time);
         
         

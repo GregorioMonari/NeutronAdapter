@@ -33,13 +33,6 @@ export default class CronScheduler{
             const startTime=performance.now()
             log.info("Executing job for featureOfInterest:",foi)
             
-            /*
-                D'ora in poi, ogni giorno nel momento specificato, il cron job esegue la sua funzione (applicare il modello che abbiamo adattato da R)
-                1. Chiamare i dati delle API (JUNG e FINAPP) del giorno prima
-                2. Applicare il modello R -> menata della spawn
-                3. Con i dati in output del modello abbiamo fatto calculate mean
-            */
-            
             const jclient= new NmDbClient();
             const fclient= new FinAppClient("../resources/id_sensor_baroni.csv");
             const today = new Date();
@@ -49,10 +42,8 @@ export default class CronScheduler{
             console.log("Received",jungData.length,"Bytes from Jung") 
             const finappData= await fclient.getRawFinappData(67); 
             console.log("Received",finappData.length,"Bytes from Finapp")
-       
-            
-            const csvOut= await neutronCount2SoilMoisture(jungData,finappData)
-            //console.log("Output:",modelOutput.length)   
+        
+            const csvOut= await neutronCount2SoilMoisture(jungData,finappData)   
             const SMmean = await calculateSMYesterday(csvOut);
             console.log("Soil Moisture Mean of the Previous Day: " + SMmean); 
             
