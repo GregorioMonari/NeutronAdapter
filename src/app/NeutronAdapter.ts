@@ -6,12 +6,12 @@ import CronScheduler from "./CronScheduler";
 
 export default class NeutronAdapter {
     //private unitsConsumer:UnitsConsumer;
-    private cronManager:CronScheduler;
-    private jsap:any;
+    private cronManager: CronScheduler;
+    private placeProducer: PlaceProducer;
 
     constructor(jsap:any){
         this.cronManager= new CronScheduler(jsap);
-        this.jsap=jsap;
+        this.placeProducer = new PlaceProducer(jsap)
     }
 
     //Start the application
@@ -24,30 +24,18 @@ export default class NeutronAdapter {
         var lat="44.384809"; 
         var long="11.698777";
 
-        const placeProducer = new PlaceProducer(this.jsap)
-        placeProducer.updateSepa({
+        await this.placeProducer.updateSepa({
             name:name,        
             id:place,      
             lat:lat,          
             lon:long        
         })
-        
 
-        //2. START IMOLA CRON JOB
-        //place: id, name, lat, long
+        //2. START CRON JOB
         var time="11:09"; 
         await this.cronManager.addJob(place,time);
-        
-        
-
     }
-    
-    //-----------------------------UTLITIES--------------------------------------------------------------------
-    //Stops the application
-    public stop(){}
 
-    //Get all currently running cron jobs
-    public getActiveJobs(){
-        //return this.cronManager.getActiveJobs()
-    }
+    async stop(){} //TODO: stop application
+
 } 
