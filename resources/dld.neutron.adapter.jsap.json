@@ -1,5 +1,5 @@
 {
-    "host": "sepa",
+    "host": "dld.arces.unibo.it",
     "oauth": {
         "enable": false,
         "register": "https://localhost:8443/oauth/register",
@@ -7,14 +7,14 @@
     },
     "sparql11protocol": {
         "protocol": "http",
-        "port": 8000,
+        "port": 8668,
         "query": {
-            "path": "/sparql",
+            "path": "/query",
             "method": "POST",
             "format": "JSON"
         },
         "update": {
-            "path": "/sparql",
+            "path": "/update",
             "method": "POST",
             "format": "JSON"
         }
@@ -24,7 +24,7 @@
         "protocol": "ws",
         "availableProtocols": {
             "ws": {
-                "port": 9000,
+                "port": 9668,
                 "path": "/subscribe"
             },
             "wss": {

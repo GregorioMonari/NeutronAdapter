@@ -35,16 +35,16 @@ export default class CronScheduler{
             const finAppClient= new FinAppClient("../resources/id_sensor_baroni.csv");
             const today = new Date();
             const isoDate = today.toISOString().split('T')[0];
-            console.log("** FETCHING DATA FROM API")
+            log.info("** FETCHING DATA FROM API")
             const jungData= await jungClient.getRawData("JUNG","2023-04-01",isoDate);
-            console.log("Received",jungData.length,"Bytes from Jung") 
+            log.info("Received",jungData.length,"Bytes from Jung") 
             const finappData= await finAppClient.getRawFinappData(67); 
-            console.log("Received",finappData.length,"Bytes from Finapp")
+            log.info("Received",finappData.length,"Bytes from Finapp")
         
             //2. APPLY MODEL
             const csvOut= await neutronCount2SoilMoisture(jungData,finappData)   
             const SMmean = await calculateSMYesterday(csvOut);
-            console.log("Soil Moisture Mean of the Previous Day: " + SMmean); 
+            log.info("Soil Moisture Mean of the Previous Day: " + SMmean); 
             
             //3. UPDATE SEPA
             const {formattedDate,formattedPrevDate}=getUpdateTimestamps();
@@ -59,8 +59,10 @@ export default class CronScheduler{
                 value:SMmean
 
             })
-        })
+        },null,false,"utc");
+        job.start()
         this.activeJobs.push(job)
+        log.info("Active cron jobs:",this.activeJobs.length)
     }
 }
 

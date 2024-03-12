@@ -11,7 +11,7 @@
     "build": "tsc",
     "start": "node ./build/main.js",
     "dev:build": "tsc -w",
-    "dev:run": "nodemon build/main -jsap './resources/criteria.jsap.json' -loglevel 1",
+    "dev:run": "nodemon build/main -jsap './resources/dld.neutron.adapter.jsap.json' -loglevel 1",
     "dev": "concurrently npm:dev:*"
   },
   "repository": {

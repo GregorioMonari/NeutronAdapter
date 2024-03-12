@@ -10,18 +10,14 @@ volumes:
 
 
 services:
-  #api:
-  #  build:
-  #    context: api/
-  #  command: npm start
-  #  volumes:
-  #    - ./resources/:/home/node/resources
-  #  networks:
-  #    - default
-  #  ports:
-  #    - 3000:3000
-  #  environment:
-  #    - TIME=11:30
+  neutron-adapter:
+    build:
+      context: "."
+    # command: npm start
+    networks:
+      - default
+    environment:
+      - update_time=11:30
 
 
   sepa:
