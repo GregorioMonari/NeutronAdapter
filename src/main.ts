@@ -22,7 +22,7 @@ function getConfiguredJsap(){
     // get jsap
     const jsapPath= argsMap.jsapPath? argsMap.jsapPath : 
         process.env["jsap"]? process.env["jsap"] : "./resources/neutron.adapter.jsap.json";
-    const jsapFile= fs.readFileSync(jsapPath as string).toString(); //require("../resources/neutron.adapter.jsap.json")
+    const jsapFile= fs.readFileSync(jsapPath as string).toString();
     const jsap= JSON.parse(jsapFile);
     console.log("- Using jsap:",jsapPath)
     // override parameters
